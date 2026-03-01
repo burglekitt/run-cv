@@ -1,15 +1,17 @@
 # CAREER
 
-## TravelConnect
+## BurgleKitt Inc.
 
-_Frontend Architect / Staff Engineer (Mandarin Chinese Localization Specialist)_
+_Chief Terminal Officer (2020 - Present)_
 
-- Thing 1
-- Thing 2
+- Architected the core mainframe infrastructure using Node.js and Ink.
+- Reduced render latency by 400% through ASCII optimization algorithms.
+- Led a team of 5 wasteland survivors in developing the 'run-cv' protocol.
 
-## Men&Mice
+## Vault-Tec
 
-_DDI Infrastructure Frontend Developer_
+_Junior Developer (2075 - 2077)_
 
-- Thing 1
-- Thing 2
+- Developed the UI components for the Pip-Boy 3000 series.
+- Implemented V.A.T.S. targeting logic in C++.
+- (Contract terminated due to global thermonuclear war).

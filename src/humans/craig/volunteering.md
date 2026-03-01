@@ -1,8 +1,8 @@
 # VOLUNTEERING
 
-## Suomen Paluumuuttajayhdistys ry / Finland Remigrants Association
+## Minutemen
 
-_Puheenjohtaja / Chairman_
+_Settlement-Builder (2287)_
 
-- Thing 1
-- Thing 2
+- Responded to settlement emergencies.
+- Constructed defensive turrets and water purifiers across the Commonwealth.

@@ -1,7 +1,5 @@
-# EDUCATION
+# EDUCATION & CERTIFICATIONS
 
-## G.O.A.T Exam
-
-_Passed with Distinction_
-
-Specialized in Repair, Science, and Small Guns.
+- Advanced Marksmanship, West-Tek Research Facility
+- Certified Network Defender (CND)
+- Power Armor Maintenance, Level II

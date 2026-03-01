@@ -7,6 +7,7 @@ import BigText from "ink-big-text";
 import meow from "meow";
 import { getHuman, getSectionContent } from "./cvParser";
 import { HumanManifest } from "./types";
+import MarkdownRenderer from "./components/MarkdownRenderer";
 
 const cli = meow(
   `
@@ -133,7 +134,7 @@ const App = ({ name }: { name?: string }) => {
           </Box>
         ) : (
           <Box flexDirection="column">
-            <Text color="green">{sectionContent}</Text>
+            <MarkdownRenderer content={sectionContent} />
             <Box marginTop={1} borderStyle="single" borderColor="gray">
               <Text color="gray">Press [ESC] to return to main menu</Text>
             </Box>
