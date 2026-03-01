@@ -1,10 +1,18 @@
-import React from "react";
+import { ReactNode } from "react";
 import { Box, Text } from "ink";
-import { marked } from "marked";
-import { unescape } from "html-escaper";
+import { marked, Token, Tokens } from "marked";
+
+const unescape = (text: string): string => {
+  return text
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+};
 
 // This is a simplified recursive renderer for marked tokens.
-const renderTokens = (tokens: marked.Token[] | undefined): React.ReactNode => {
+const renderTokens = (tokens: Token[] | undefined): ReactNode => {
   if (!tokens) {
     return null;
   }
@@ -28,7 +36,7 @@ const renderTokens = (tokens: marked.Token[] | undefined): React.ReactNode => {
       case "list":
         return (
           <Box key={index} flexDirection="column" marginBottom={1}>
-            {token.items.map((item, i) => (
+            {(token as Tokens.List).items.map((item, i) => (
               <Box key={i} paddingLeft={2}>
                 <Text color="green">- {renderTokens(item.tokens)}</Text>
               </Box>
@@ -62,9 +70,7 @@ interface Props {
   content: string;
 }
 
-const MarkdownRenderer = ({ content }: Props) => {
+export function MarkdownRenderer({ content }: Props) {
   const tokens = marked.lexer(content);
   return <>{renderTokens(tokens)}</>;
-};
-
-export default MarkdownRenderer;
+}

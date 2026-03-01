@@ -3,10 +3,13 @@ export interface MenuItem {
   file: string;
 }
 
-export interface HumanManifest {
+export interface Page {
+  content: string;
+  menu: MenuItem[];
+  dir: string;
+}
+
+export interface HumanManifest extends Page {
   name: string;
   role: string;
-  menu: MenuItem[];
-  introContent: string;
-  dir: string;
 }

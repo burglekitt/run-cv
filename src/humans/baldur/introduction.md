@@ -1,6 +1,6 @@
 ---
-name: Baldur
-role: Security Specialist
+name: Baldur P
+role: Senior Frontend Architect
 menu:
   - label: Mission Log
     file: missions.md

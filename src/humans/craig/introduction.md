@@ -1,9 +1,9 @@
 ---
-name: Craig Curtis
-role: Terminal Architect
+name: Craig
+role: Senior Frontend Architect
 menu:
   - label: Career
-    file: career.md
+    file: career/index.md
   - label: Education
     file: education.md
   - label: Volunteering

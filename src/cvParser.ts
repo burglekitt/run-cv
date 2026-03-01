@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
-import { HumanManifest } from "./types";
+import { HumanManifest, Page } from "./types";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -30,7 +30,7 @@ export const getHuman = async (id: string): Promise<HumanManifest> => {
       name: data.name,
       role: data.role,
       menu: data.menu || [],
-      introContent: content,
+      content: content,
       dir: humanDir,
     };
   } catch (error) {
@@ -52,14 +52,19 @@ export const getHuman = async (id: string): Promise<HumanManifest> => {
   }
 };
 
-export const getSectionContent = async (
-  dir: string,
-  file: string,
-): Promise<string> => {
-  const filePath = path.join(dir, file);
+export const getPage = async (baseDir: string, file: string): Promise<Page> => {
+  const filePath = path.join(baseDir, file);
+  const fileDir = path.dirname(filePath);
+
   try {
-    return await fs.readFile(filePath, "utf-8");
+    const fileContent = await fs.readFile(filePath, "utf-8");
+    const { data, content } = matter(fileContent);
+    return {
+      content,
+      menu: data.menu,
+      dir: fileDir,
+    };
   } catch (error) {
-    return `ERROR: Data tape corrupted. Could not read file: ${file}`;
+    throw new Error(`Data tape corrupted. Could not read file: ${filePath}`);
   }
 };

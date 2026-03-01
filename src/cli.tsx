@@ -5,9 +5,9 @@ import SelectInput from "ink-select-input";
 import Gradient from "ink-gradient";
 import BigText from "ink-big-text";
 import meow from "meow";
-import { getHuman, getSectionContent } from "./cvParser";
-import { HumanManifest } from "./types";
-import MarkdownRenderer from "./components/MarkdownRenderer";
+import { getHuman, getPage } from "./cvParser";
+import { HumanManifest, Page } from "./types";
+import { MarkdownRenderer } from "./components/MarkdownRenderer";
 
 const cli = meow(
   `
@@ -23,12 +23,11 @@ const cli = meow(
   },
 );
 
-const App = ({ name }: { name?: string }) => {
+function App({ name }: { name?: string }) {
   const [human, setHuman] = useState<HumanManifest | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState<"home" | "section">("home");
-  const [sectionContent, setSectionContent] = useState<string>("");
+  const [history, setHistory] = useState<Page[]>([]);
   const [gradientColors, setGradientColors] = useState([
     "#00FF00",
     "#008000",
@@ -48,6 +47,7 @@ const App = ({ name }: { name?: string }) => {
       try {
         const data = await getHuman(name);
         setHuman(data);
+        setHistory([data]);
       } catch (err) {
         setError((err as Error).message);
       }
@@ -76,20 +76,26 @@ const App = ({ name }: { name?: string }) => {
   }, []);
 
   useInput((input, key) => {
-    if (view === "section" && (key.escape || key.backspace)) {
-      setView("home");
+    // Handle Back navigation
+    if (key.escape || (input === "b" && history.length > 1)) {
+      if (history.length > 1) {
+        setHistory((prev) => prev.slice(0, -1));
+      }
     }
-    if (input === "q" && view === "home") {
+    if (input === "q" && history.length === 1) {
       process.exit(0);
     }
   });
 
-  const handleSelect = async (item: { value: string }) => {
-    if (!human) return;
-    const content = await getSectionContent(human.dir, item.value);
-    setSectionContent(content);
-    setView("section");
-  };
+  async function handleSelect(item: { value: string }) {
+    const currentPage = history[history.length - 1];
+    try {
+      const nextPage = await getPage(currentPage.dir, item.value);
+      setHistory((prev) => [...prev, nextPage]);
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  }
 
   if (loading) return <Text color="green">Initializing sequence...</Text>;
 
@@ -97,10 +103,7 @@ const App = ({ name }: { name?: string }) => {
 
   if (!human) return null;
 
-  const menuItems = human.menu.map((item) => ({
-    label: item.label,
-    value: item.file,
-  }));
+  const currentPage = history[history.length - 1];
 
   return (
     <Box
@@ -123,26 +126,34 @@ const App = ({ name }: { name?: string }) => {
       </Box>
 
       <Box borderStyle="single" borderColor="green" padding={1} minHeight={15}>
-        {view === "home" ? (
+        {currentPage.menu ? (
           <Box flexDirection="column">
-            <Text color="green" dimColor>
-              {human.introContent}
-            </Text>
+            <MarkdownRenderer content={currentPage.content} />
             <Box marginTop={1}>
-              <SelectInput items={menuItems} onSelect={handleSelect} />
+              <SelectInput
+                items={currentPage.menu.map((item) => ({
+                  label: item.label,
+                  value: item.file,
+                }))}
+                onSelect={handleSelect}
+                limit={10}
+              />
+            </Box>
+            <Box marginTop={1} borderStyle="single" borderColor="gray">
+              <Text color="gray">Press [ESC] or 'b' to go back</Text>
             </Box>
           </Box>
         ) : (
           <Box flexDirection="column">
-            <MarkdownRenderer content={sectionContent} />
+            <MarkdownRenderer content={currentPage.content} />
             <Box marginTop={1} borderStyle="single" borderColor="gray">
-              <Text color="gray">Press [ESC] to return to main menu</Text>
+              <Text color="gray">Press [ESC] or 'b' to go back</Text>
             </Box>
           </Box>
         )}
       </Box>
     </Box>
   );
-};
+}
 
 render(<App name={cli.input[0]} />);
