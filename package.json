@@ -1,12 +1,40 @@
 {
   "name": "run-cv",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "run-cv": "dist/cli.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsup src/cli.tsx --format esm --clean",
+    "dev": "tsx src/cli.tsx",
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "ink": "^4.4.1",
+    "ink-big-text": "^2.0.0",
+    "ink-gradient": "^3.0.0",
+    "ink-select-input": "^5.0.0",
+    "marked": "^9.1.0",
+    "meow": "^12.1.1",
+    "nodemailer": "^8.0.1",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/marked": "^5.0.1",
+    "@types/node": "^20.6.2",
+    "@types/nodemailer": "^6.4.10",
+    "@types/react": "^18.2.22",
+    "ink-testing-library": "^3.0.0",
+    "tsup": "^8.0.1",
+    "tsx": "^4.7.1",
+    "typescript": "^5.2.2",
+    "vitest": "^4.0.18"
+  }
 }
