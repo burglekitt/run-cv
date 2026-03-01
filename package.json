@@ -2,6 +2,7 @@
   "name": "run-cv",
   "version": "1.0.0",
   "type": "module",
+  "homepage": "https://burglekitt.github.io/run-cv",
   "main": "dist/index.js",
   "bin": {
     "run-cv": "dist/cli.js"
