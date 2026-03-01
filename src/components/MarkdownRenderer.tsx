@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { Box, Text } from "ink";
 import { marked, Token, Tokens } from "marked";
 
@@ -36,11 +36,49 @@ const renderTokens = (tokens: Token[] | undefined): ReactNode => {
       case "list":
         return (
           <Box key={index} flexDirection="column" marginBottom={1}>
-            {(token as Tokens.List).items.map((item, i) => (
-              <Box key={i} paddingLeft={2}>
-                <Text color="green">- {renderTokens(item.tokens)}</Text>
-              </Box>
-            ))}
+            {(token as Tokens.List).items.map((item, i) => {
+              const elements: ReactNode[] = [];
+              let inlineTokens: Token[] = [];
+
+              const flushInline = () => {
+                if (inlineTokens.length > 0) {
+                  elements.push(
+                    <Text key={`inline-${elements.length}`} color="green">
+                      {renderTokens(inlineTokens)}
+                    </Text>,
+                  );
+                  inlineTokens = [];
+                }
+              };
+
+              item.tokens.forEach((t) => {
+                if (
+                  t.type === "heading" ||
+                  t.type === "paragraph" ||
+                  t.type === "list" ||
+                  t.type === "space"
+                ) {
+                  flushInline();
+                  elements.push(
+                    <React.Fragment key={`block-${elements.length}`}>
+                      {renderTokens([t])}
+                    </React.Fragment>,
+                  );
+                } else {
+                  inlineTokens.push(t);
+                }
+              });
+              flushInline();
+
+              return (
+                <Box key={i} flexDirection="row" paddingLeft={2}>
+                  <Box marginRight={1}>
+                    <Text color="green">-</Text>
+                  </Box>
+                  <Box flexDirection="column">{elements}</Box>
+                </Box>
+              );
+            })}
           </Box>
         );
       case "strong":

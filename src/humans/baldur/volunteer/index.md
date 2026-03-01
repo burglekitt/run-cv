@@ -2,8 +2,6 @@
 menu:
   - label: Burglekitt
     file: burglekitt.md
-  - label: Suomen Paluumuuttajayhdistys ry
-    file: spry.md
 ---
 
 # VOLUNTEER EXPERIENCE

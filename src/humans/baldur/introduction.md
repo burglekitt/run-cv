@@ -1,18 +1,16 @@
 ---
-name: Baldur P
-role: Senior Frontend Architect
+name: Baldur
+role: Senior Software Engineer
 menu:
-  - label: Mission Log
-    file: missions.md
-  - label: Combat Training
-    file: training.md
-  - label: Hobbies
-    file: hobbies.md
   - label: Career
-    file: career.md
+    file: career/index.md
   - label: Education
-    file: education.md
-  - label: Encrypted Comms
+    file: education/index.md
+  - label: Hobbies
+    file: hobbies/index.md
+  - label: Volunteer
+    file: volunteer/index.md
+  - label: Contact
     file: contact.md
 ---
 

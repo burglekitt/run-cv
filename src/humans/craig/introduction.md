@@ -5,9 +5,9 @@ menu:
   - label: Career
     file: career/index.md
   - label: Education
-    file: education.md
+    file: education/index.md
   - label: Volunteering
-    file: volunteering.md
+    file: volunteering/index.md
   - label: Contact
     file: contact.md
 ---

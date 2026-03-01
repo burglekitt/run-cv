@@ -1,0 +1,5 @@
+# SUOMEN PALUUMUUTTAJAYHDISTYS RY / FINLAND REMIGRANTS ASSOCATION
+
+_Puheenjohtaja / Chairmain | 2026.10 - Present_
+
+- Do stuff
