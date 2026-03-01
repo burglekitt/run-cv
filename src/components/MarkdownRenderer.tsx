@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { Fragment, ReactNode } from "react";
 import { Box, Text } from "ink";
 import { marked, Token, Tokens } from "marked";
 
@@ -60,9 +60,9 @@ const renderTokens = (tokens: Token[] | undefined): ReactNode => {
                 ) {
                   flushInline();
                   elements.push(
-                    <React.Fragment key={`block-${elements.length}`}>
+                    <Fragment key={`block-${elements.length}`}>
                       {renderTokens([t])}
-                    </React.Fragment>,
+                    </Fragment>,
                   );
                 } else {
                   inlineTokens.push(t);

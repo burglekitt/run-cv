@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { render, Text, Box, useInput } from "ink";
 import SelectInput from "ink-select-input";
 import Gradient from "ink-gradient";
@@ -8,6 +8,7 @@ import meow from "meow";
 import { getHuman, getPage } from "./cvParser";
 import { HumanManifest, Page } from "./types";
 import { MarkdownRenderer } from "./components/MarkdownRenderer";
+import { LoadingScreen } from "./components/LoadingScreen";
 
 const cli = meow(
   `
@@ -51,7 +52,6 @@ function App({ name }: { name?: string }) {
       } catch (err) {
         setError((err as Error).message);
       }
-      setLoading(false);
     };
     load();
   }, [name]);
@@ -97,13 +97,9 @@ function App({ name }: { name?: string }) {
     }
   }
 
-  if (loading) return <Text color="green">Initializing sequence...</Text>;
-
   if (error) return <Text color="red">ERROR: {error}</Text>;
 
-  if (!human) return null;
-
-  const currentPage = history[history.length - 1];
+  const currentPage = history.length > 0 ? history[history.length - 1] : null;
 
   return (
     <Box
@@ -119,39 +115,58 @@ function App({ name }: { name?: string }) {
         </Gradient>
       </Box>
 
-      <Box marginBottom={1}>
-        <Text color="green">User: {human.name}</Text>
-        <Text color="gray"> | </Text>
-        <Text color="green">Role: {human.role}</Text>
-      </Box>
+      {loading ? (
+        <LoadingScreen onFinished={() => setLoading(false)} />
+      ) : human && currentPage ? (
+        <Fragment>
+          <Box marginBottom={1}>
+            <Text color="green">User: {human.name}</Text>
+            <Text color="gray"> | </Text>
+            <Text color="green">Role: {human.role}</Text>
+          </Box>
 
-      <Box borderStyle="single" borderColor="green" padding={1} minHeight={15}>
-        {currentPage.menu ? (
-          <Box flexDirection="column">
-            <MarkdownRenderer content={currentPage.content} />
-            <Box marginTop={1}>
-              <SelectInput
-                items={currentPage.menu.map((item) => ({
-                  label: item.label,
-                  value: item.file,
-                }))}
-                onSelect={handleSelect}
-                limit={10}
-              />
-            </Box>
-            <Box marginTop={1} borderStyle="single" borderColor="gray">
-              <Text color="gray">Press [ESC] or 'b' to go back</Text>
-            </Box>
+          <Box
+            borderStyle="single"
+            borderColor="green"
+            padding={1}
+            minHeight={15}
+          >
+            {currentPage.menu ? (
+              <Box flexDirection="column">
+                <MarkdownRenderer content={currentPage.content} />
+                <Box marginTop={1}>
+                  <SelectInput
+                    items={currentPage.menu.map((item) => ({
+                      label: item.label,
+                      value: item.file,
+                    }))}
+                    onSelect={handleSelect}
+                    limit={10}
+                  />
+                </Box>
+                <Box marginTop={1} borderStyle="single" borderColor="gray">
+                  <Text color="gray">
+                    {history.length > 1
+                      ? "Press [ESC] or 'b' to go back"
+                      : "Press 'q' to quit"}
+                  </Text>
+                </Box>
+              </Box>
+            ) : (
+              <Box flexDirection="column">
+                <MarkdownRenderer content={currentPage.content} />
+                <Box marginTop={1} borderStyle="single" borderColor="gray">
+                  <Text color="gray">
+                    {history.length > 1
+                      ? "Press [ESC] or 'b' to go back"
+                      : "Press 'q' to quit"}
+                  </Text>
+                </Box>
+              </Box>
+            )}
           </Box>
-        ) : (
-          <Box flexDirection="column">
-            <MarkdownRenderer content={currentPage.content} />
-            <Box marginTop={1} borderStyle="single" borderColor="gray">
-              <Text color="gray">Press [ESC] or 'b' to go back</Text>
-            </Box>
-          </Box>
-        )}
-      </Box>
+        </Fragment>
+      ) : null}
     </Box>
   );
 }

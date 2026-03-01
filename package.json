@@ -10,8 +10,7 @@
   "scripts": {
     "build": "tsup src/cli.tsx --format esm --clean",
     "dev": "tsx src/cli.tsx",
-    "test": "vitest run",
-    "deploy:site": "gh-pages -d public"
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -33,7 +32,6 @@
     "@types/node": "^20.6.2",
     "@types/nodemailer": "^6.4.10",
     "@types/react": "^18.2.22",
-    "gh-pages": "^6.3.0",
     "ink-testing-library": "^3.0.0",
     "tsup": "^8.0.1",
     "tsx": "^4.7.1",
