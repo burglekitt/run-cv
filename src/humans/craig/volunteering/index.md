@@ -2,8 +2,10 @@
 menu:
   - label: Burglekitt
     file: burglekitt.md
-  - label: Suomen Paluumuuttajayhdistys ry
+  - label: SPry (Finnish Remigration Association)
     file: spry.md
+  - label: CoderDojo XL (Shanghai)
+    file: coderdojo.md
 ---
 
 # VOLUNTEER EXPERIENCE

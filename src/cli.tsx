@@ -36,6 +36,10 @@ function App({ name }: { name?: string }) {
     "#008000",
     "#00FF00",
   ]);
+  const [highlightedItem, setHighlightedItem] = useState<{
+    label: string;
+    value: string;
+  } | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -84,6 +88,12 @@ function App({ name }: { name?: string }) {
     }
     if (input === "q" && history.length === 1) {
       process.exit(0);
+    }
+
+    // Handle spacebar selection for menu items
+    const currentPage = history.length > 0 ? history[history.length - 1] : null;
+    if (input === " " && currentPage?.menu && highlightedItem) {
+      handleSelect(highlightedItem);
     }
   });
 
@@ -141,6 +151,7 @@ function App({ name }: { name?: string }) {
                       value: item.file,
                     }))}
                     onSelect={handleSelect}
+                    onHighlight={setHighlightedItem}
                     limit={10}
                   />
                 </Box>

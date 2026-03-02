@@ -1,5 +1,13 @@
-# SUOMEN PALUUMUUTTAJAYHDISTYS RY / FINLAND REMIGRANTS ASSOCATION
+# Suomen Paluumuuttajayhdistys ry (Finnish Remigration Association)
 
-_Puheenjohtaja / Chairmain | 2026.10 - Present_
+_Chairman (Puheenjohtaja) | 2024.01 - Present_
 
-- Do stuff
+- Lead digital strategy and collaborate on advocacy for the Finnish remigration community.
+
+- Orchestrate high-level community-building initiatives to anchor professional and civic life in Finland.
+
+- Manage stakeholder relationships to influence policy and support the Finnish remigration ecosystem.
+
+- Ensure organizational reliability and long-term impact through strategic digital roadmap management.
+
+- Skills: Digital Strategy, Executive Leadership, Civic Advocacy, Stakeholder Management.
