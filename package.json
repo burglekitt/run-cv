@@ -7,10 +7,15 @@
   "bin": {
     "run-cv": "dist/cli.js"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup src/cli.tsx --format esm --clean",
     "dev": "tsx src/cli.tsx",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [],
   "author": "",
