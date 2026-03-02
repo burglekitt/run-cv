@@ -4,6 +4,8 @@ A mainframe-inspired terminal CV viewer built with Node.js, React, and Ink.
 
 ![Terminal UI](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3R5eXJ5eXJ5eXJ5eXJ5eXJ5eXJ5eXJ5eXJ5eXJ5eXJ5eXJ5eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKSjRrfIPjeiVyM/giphy.gif)
 
+[View Landing Page](https://burglekitt.github.io/run-cv/)
+
 ## Features
 
 - 📟 **Retro Terminal UI**: Green-screen aesthetic with keyboard navigation.
