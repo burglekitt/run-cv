@@ -7,6 +7,7 @@ export interface Page {
   content: string;
   menu: MenuItem[];
   dir: string;
+  file?: string;
 }
 
 export interface HumanManifest extends Page {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Text } from "ink";
 
-const LOADING_TIME = 2000;
+const LOADING_TIME = 200;
 const UPDATE_INTERVAL = LOADING_TIME / 100;
 
 // Simple fake loading bar component

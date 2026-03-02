@@ -32,6 +32,7 @@ export const getHuman = async (id: string): Promise<HumanManifest> => {
       menu: data.menu || [],
       content: content,
       dir: humanDir,
+      file: path.basename(introFile),
     };
   } catch (error) {
     let debugMsg = `\nChecked path: ${introFile}`;
@@ -63,6 +64,7 @@ export const getPage = async (baseDir: string, file: string): Promise<Page> => {
       content,
       menu: data.menu,
       dir: fileDir,
+      file,
     };
   } catch (error) {
     throw new Error(`Data tape corrupted. Could not read file: ${filePath}`);

@@ -1,6 +1,6 @@
 {
   "name": "run-cv",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "type": "module",
   "homepage": "https://burglekitt.github.io/run-cv",
   "main": "dist/index.js",
@@ -25,6 +25,7 @@
     "marked": "^12.0.1",
     "meow": "^12.1.1",
     "nodemailer": "^8.0.1",
+    "open": "^10.2.0",
     "react": "^18.2.0"
   },
   "devDependencies": {

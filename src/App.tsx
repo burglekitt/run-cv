@@ -4,12 +4,14 @@ import { Text, Box, useInput } from "ink";
 import SelectInput from "ink-select-input";
 import Gradient from "ink-gradient";
 import BigText from "ink-big-text";
+import open from "open";
 
 import { getHuman, getPage } from "./cvParser";
 import { HumanManifest, Page } from "./types";
 import { MarkdownRenderer } from "./components/MarkdownRenderer";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { AccessDenied } from "./components/AccessDenied";
+import { Hints } from "./components/Hints";
 
 interface AppProps {
   name?: string;
@@ -31,6 +33,10 @@ export function App({ name }: AppProps) {
     label: string;
     value: string;
   } | null>(null);
+  const [contactInfo, setContactInfo] = useState<{
+    email?: string;
+    linkedin?: string;
+  }>({});
 
   useEffect(() => {
     const load = async () => {
@@ -51,6 +57,27 @@ export function App({ name }: AppProps) {
     load();
   }, [name]);
 
+  const currentPage = history.length > 0 ? history[history.length - 1] : null;
+  const isContactPage = currentPage?.file === "contact.md";
+
+  useEffect(() => {
+    if (isContactPage && currentPage) {
+      const content = currentPage.content;
+      const emailMatch = content.match(
+        /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
+      );
+      const linkedinMatch = content.match(
+        /https?:\/\/(www\.)?linkedin\.com\/[^\s)]+/,
+      );
+      setContactInfo({
+        email: emailMatch ? emailMatch[0] : undefined,
+        linkedin: linkedinMatch ? linkedinMatch[0] : undefined,
+      });
+    } else {
+      setContactInfo({});
+    }
+  }, [currentPage, isContactPage]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setGradientColors((prev) => {
@@ -64,18 +91,34 @@ export function App({ name }: AppProps) {
   }, []);
 
   useInput((input, key) => {
-    // Handle Back navigation
+    // Global navigation should always work
     if (key.escape || (input === "b" && history.length > 1)) {
       if (history.length > 1) {
         setHistory((prev) => prev.slice(0, -1));
       }
+      return;
     }
     if (input === "q" && (history.length <= 1 || error)) {
       process.exit(0);
     }
 
+    // If on a contact page, handle command input
+    if (isContactPage) {
+      if (input === "m" && contactInfo.email) {
+        const subject = encodeURIComponent("Accessed run-cv, initiating comms");
+        const body = encodeURIComponent(
+          "Having navigated the digital tapestry of your run-cv, I'm reaching out to establish a more direct line of communication. I'm impressed with what I've seen and would like to discuss potential opportunities.",
+        );
+        open(`mailto:${contactInfo.email}?subject=${subject}&body=${body}`, {
+          app: { name: "Mail" },
+        });
+      } else if (input === "p" && contactInfo.linkedin) {
+        open(contactInfo.linkedin);
+      }
+      return;
+    }
+
     // Handle spacebar selection for menu items
-    const currentPage = history.length > 0 ? history[history.length - 1] : null;
     if (input === " " && currentPage?.menu && highlightedItem) {
       handleSelect(highlightedItem);
     }
@@ -90,8 +133,6 @@ export function App({ name }: AppProps) {
       setError((err as Error).message);
     }
   }
-
-  const currentPage = history.length > 0 ? history[history.length - 1] : null;
 
   return (
     <Box
@@ -150,13 +191,25 @@ export function App({ name }: AppProps) {
             ) : (
               <Box flexDirection="column">
                 <MarkdownRenderer content={currentPage.content} />
-                <Box marginTop={1} borderStyle="single" borderColor="gray">
-                  <Text color="gray">
-                    {history.length > 1
-                      ? "Press [ESC] or 'b' to go back"
-                      : "Press 'q' to quit"}
-                  </Text>
-                </Box>
+                {isContactPage && (
+                  <Box flexDirection="column" marginTop={1}>
+                    <Hints
+                      hints={{
+                        ...(contactInfo.email && { m: "Send email" }),
+                        ...(contactInfo.linkedin && {
+                          p: "Open LinkedIn profile",
+                        }),
+                      }}
+                    />
+                  </Box>
+                )}
+                  <Box marginTop={1} borderStyle="single" borderColor="gray">
+                    <Text color="gray">
+                      {history.length > 1
+                        ? "Press [ESC] or 'b' to go back"
+                        : "Press 'q' to quit"}
+                    </Text>
+                  </Box>
               </Box>
             )}
           </Box>
