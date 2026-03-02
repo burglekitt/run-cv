@@ -1,7 +1,7 @@
 ---
 menu:
-  - label: Example
-    file: example.md
+  - label: Professional Competitive Napping
+    file: pcn.md
 ---
 
 # HOBBIES

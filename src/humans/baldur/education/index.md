@@ -1,7 +1,7 @@
 ---
 menu:
-  - label: Example
-    file: example.md
+  - label: Intergalactic Academy of Applied Physic
+    file: iaap.md
 ---
 
 # EDUCATION

@@ -14,10 +14,11 @@ A mainframe-inspired terminal CV viewer built with Node.js, React, and Ink.
 
 ## Usage
 
-To view the CV in your terminal:
+- 📟 MacOS/Linux: Just run npx run-cv <name>
+- 🪟 Windows: Ensure Node.js is installed, then run npx run-cv <name> in your terminal.
 
 ```bash
-npx run-cv
+npx run-cv <name>
 ```
 
 ## Development
