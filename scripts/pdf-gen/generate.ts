@@ -54,54 +54,58 @@ async function generatePDF(name: string, dataPath: string) {
   const configFile = fs.readFileSync(configPath, "utf8");
   const { data: config } = matter(configFile);
 
-  // 2. Process sections
   let htmlContent = "";
+
   for (const section of config.sections) {
+    // 1. SKIP logic for introduction.md
+    if (section === "introduction") continue;
+
     const sectionPath = path.join(dataPath, section);
     const directFilePath = path.join(dataPath, `${section}.md`);
 
     let filesToProcess: string[] = [];
     let currentBasePath = sectionPath;
 
-    // 1. Check if the section is a direct .md file (e.g., introduction.md)
     if (
       fs.existsSync(directFilePath) &&
       fs.lstatSync(directFilePath).isFile()
     ) {
       filesToProcess = [`${section}.md`];
-      currentBasePath = dataPath; // The file lives in the human's root
-    }
-    // 2. Otherwise, check if it's a directory (e.g., career/)
-    else if (
+      currentBasePath = dataPath;
+    } else if (
       fs.existsSync(sectionPath) &&
       fs.lstatSync(sectionPath).isDirectory()
     ) {
       const indexPath = path.join(sectionPath, "index.md");
+
       if (fs.existsSync(indexPath)) {
-        const indexContent = fs.readFileSync(indexPath, "utf8");
-        filesToProcess = indexContent.split("\n").filter(Boolean);
+        const indexFile = fs.readFileSync(indexPath, "utf8");
+        const { data: indexData } = matter(indexFile);
+
+        // 2. SMART PARSING: Handle the YAML menu structure
+        if (indexData.menu && Array.isArray(indexData.menu)) {
+          filesToProcess = indexData.menu.map((item: any) => item.file);
+        } else {
+          // Fallback for plain list
+          filesToProcess = indexFile.split("\n").filter(Boolean);
+        }
       } else {
         filesToProcess = fs
           .readdirSync(sectionPath)
           .filter((file) => file.endsWith(".md") && file !== "index.md");
       }
-    } else {
-      console.warn(
-        `\x1b[33mWarning: Section "${section}" not found as file or folder.\x1b[0m`,
-      );
-      continue;
     }
 
-    // 3. Process the identified files
     for (const file of filesToProcess) {
-      const filePath = path.join(
-        currentBasePath,
-        file.endsWith(".md") ? file : `${file}.md`,
-      );
+      const filePath = path.join(currentBasePath, file.trim());
       if (fs.existsSync(filePath)) {
         const markdown = fs.readFileSync(filePath, "utf8");
         const { content } = matter(markdown);
-        htmlContent += `<section class="section-${section}">${marked(content)}</section>`;
+
+        // Wrap in a section for CSS targeting
+        htmlContent += `<section class="cv-section section-${section}">
+          ${marked(content)}
+        </section>`;
       }
     }
   }

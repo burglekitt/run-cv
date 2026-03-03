@@ -1,11 +1,11 @@
 ---
 layout: "hacker"
 sections:
-  - introduction
+  - pdf-intro
   - career
   - education
   - volunteer
-header: "Craig Curtis - Frontend Systems Architect"
+header: "Craig Curtis - Senior Frontend Systems Architect"
 footer: "We built this PDF! burglekitt/run-cv"
 ---
 

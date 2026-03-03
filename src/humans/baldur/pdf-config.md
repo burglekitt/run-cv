@@ -1,7 +1,7 @@
 ---
 layout: "hacker"
 sections:
-  - introduction
+  - pdf-intro
   - career
   - education
   - hobbies
