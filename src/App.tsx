@@ -99,6 +99,9 @@ export function App({ name }: AppProps) {
       return;
     }
     if (input === "q" && (history.length <= 1 || error)) {
+      // clear terminal first
+      process.stdout.write("\x1Bc");
+      // then exit
       process.exit(0);
     }
 
