@@ -30,6 +30,9 @@ export function App({ name }: AppProps) {
     theme.terminalGreenMedium,
     theme.terminalGreenBright,
   ]);
+  const [navigationMemory, setNavigationMemory] = useState<
+    Record<string, number>
+  >({});
   const [highlightedItem, setHighlightedItem] = useState<{
     label: string;
     value: string;
@@ -122,7 +125,18 @@ export function App({ name }: AppProps) {
   });
 
   async function handleSelect(item: { value: string }) {
-    const currentPage = history[history.length - 1];
+    if (!currentPage) return;
+
+    // 1. Find the index of the item we are about to click
+    const selectedIndex =
+      currentPage.menu?.findIndex((i) => i.file === item.value) ?? 0;
+
+    // 2. Save that index for this specific directory
+    setNavigationMemory((prev) => ({
+      ...prev,
+      [currentPage.dir]: selectedIndex,
+    }));
+
     try {
       const nextPage = await getPage(currentPage.dir, item.value);
       setHistory((prev) => [...prev, nextPage]);
@@ -180,12 +194,16 @@ export function App({ name }: AppProps) {
                 <MarkdownRenderer content={currentPage.content} />
                 <Box marginTop={1}>
                   <SelectInput
+                    key={currentPage.dir} // CRITICAL: Forces a fresh mount with the correct initialIndex
                     items={currentPage.menu.map((item) => ({
                       label: item.label,
                       value: item.file,
                     }))}
                     onSelect={handleSelect}
+                    // Remove onHighlight from here if it was only used to track menu position
+                    // setHighlightedItem is still fine for "hints" but don't save to menuFocus there
                     onHighlight={setHighlightedItem}
+                    initialIndex={navigationMemory[currentPage.dir] || 0}
                     limit={10}
                   />
                 </Box>
