@@ -12,6 +12,7 @@ import { MarkdownRenderer } from "./components/MarkdownRenderer";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { AccessDenied } from "./components/AccessDenied";
 import { Hints } from "./components/Hints";
+import { grabEmailPattern, grabLinkedInPattern } from "./utils/regex-utils";
 
 interface AppProps {
   name?: string;
@@ -63,12 +64,8 @@ export function App({ name }: AppProps) {
   useEffect(() => {
     if (isContactPage && currentPage) {
       const content = currentPage.content;
-      const emailMatch = content.match(
-        /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
-      );
-      const linkedinMatch = content.match(
-        /https?:\/\/(www\.)?linkedin\.com\/[^\s)]+/,
-      );
+      const emailMatch = grabEmailPattern(content);
+      const linkedinMatch = grabLinkedInPattern(content);
       setContactInfo({
         email: emailMatch ? emailMatch[0] : undefined,
         linkedin: linkedinMatch ? linkedinMatch[0] : undefined,
@@ -203,13 +200,13 @@ export function App({ name }: AppProps) {
                     />
                   </Box>
                 )}
-                  <Box marginTop={1} borderStyle="single" borderColor="gray">
-                    <Text color="gray">
-                      {history.length > 1
-                        ? "Press [ESC] or 'b' to go back"
-                        : "Press 'q' to quit"}
-                    </Text>
-                  </Box>
+                <Box marginTop={1} borderStyle="single" borderColor="gray">
+                  <Text color="gray">
+                    {history.length > 1
+                      ? "Press [ESC] or 'b' to go back"
+                      : "Press 'q' to quit"}
+                  </Text>
+                </Box>
               </Box>
             )}
           </Box>
