@@ -19,7 +19,8 @@
     "build": "tsup src/cli.tsx --format esm --clean && cp -r src/humans dist/",
     "dev": "tsx src/cli.tsx",
     "test": "vitest run",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "gen-pdf": "tsx scripts/pdf-gen/generate.ts"
   },
   "keywords": [],
   "author": "Craig O. Curtis & Baldur Páll Hólmgeirsson",
@@ -38,11 +39,13 @@
     "react": "^18.2.0"
   },
   "devDependencies": {
+    "@sparticuz/chromium": "^143.0.4",
     "@types/marked": "^6.0.0",
     "@types/node": "^20.6.2",
     "@types/nodemailer": "^6.4.10",
     "@types/react": "^18.2.22",
     "ink-testing-library": "^3.0.0",
+    "playwright-core": "^1.58.2",
     "tsup": "^8.0.1",
     "tsx": "^4.7.1",
     "typescript": "^5.2.2",
