@@ -1,0 +1,12 @@
+/* Terminal Colors */
+:root {
+  --terminal-green-bright: #00ff00;
+  --terminal-green-medium: #008000;
+  --terminal-green-dark: #003300;
+  --terminal-red-bright: #ff4d4d;
+  --terminal-red-medium: #800000;
+  --terminal-red-dark: #330000;
+  --terminal-grey-bright: #cccccc;
+  --terminal-grey-medium: #808080;
+  --terminal-grey-dark: #333333;
+}
