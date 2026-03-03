@@ -62,3 +62,13 @@ Welcome to the terminal.
 ```
 
 3. Add the referenced markdown files (e.g., `experience.md`, `contact.md`) in the same folder.
+
+# Bumping versions
+
+After you make changes, be sure:
+
+- update package.json version number
+- run `npm i` to update package-lock.json
+- Commit your changes and push
+- run `git tag vx.x.x` and `git push origin vx.x.x`
+- In Git, go to the Tags view, ensure the new version is there, then go to Releases tab, click `Draft a new release`
