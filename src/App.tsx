@@ -115,13 +115,14 @@ export function App({ name }: AppProps) {
         open(`mailto:${contactInfo.email}?subject=${subject}&body=${body}`, {
           app: { name: "Mail" },
         });
-      } else if (input === "p" && contactInfo.linkedin) {
+      }
+      if (input === "p" && contactInfo.linkedin) {
         open(contactInfo.linkedin);
       }
       return;
     }
 
-    // Handle spacebar selection for menu items
+    // Handle space  selection for menu items
     if (input === " " && currentPage?.menu && highlightedItem) {
       handleSelect(highlightedItem);
     }
