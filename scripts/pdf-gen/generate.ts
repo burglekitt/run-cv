@@ -67,28 +67,26 @@ async function main() {
 }
 
 async function generatePDF(name: string, dataPath: string, theme: string) {
-  // 1. Read and parse pdf-config.md
+  // 1. Read config and main CSS
   const configPath = path.join(dataPath, "pdf-config.md");
   const configFile = fs.readFileSync(configPath, "utf8");
   const { data: config } = matter(configFile);
 
-  // Read CSS files
   const rootCss = fs.readFileSync(path.join(STYLES_DIR, "root.css"), "utf8");
-  const themePath = path.join(STYLES_DIR, "themes", `${theme}.css`);
-  const themeCss = fs.existsSync(themePath)
-    ? fs.readFileSync(themePath, "utf8")
+  const themeCssPath = path.join(STYLES_DIR, "themes", `${theme}.css`);
+  const themeCss = fs.existsSync(themeCssPath)
+    ? fs.readFileSync(themeCssPath, "utf8")
     : "";
 
-  if (!themeCss) {
-    console.warn(
-      `\x1b[33mWarning: Theme "${theme}" not found. Falling back to default styles.\x1b[0m`,
-    );
-  }
+  // 2. NEW: Look for the Sidecar PDF CSS (e.g., hacker-pdf.css)
+  const themePdfCssPath = path.join(STYLES_DIR, "themes", `${theme}-pdf.css`);
+  const themePdfCss = fs.existsSync(themePdfCssPath)
+    ? fs.readFileSync(themePdfCssPath, "utf8")
+    : "/* No theme-specific PDF styles found */";
 
   let htmlContent = "";
 
   for (const section of config.sections) {
-    // 1. SKIP logic for introduction.md
     if (section === "introduction") continue;
 
     const sectionPath = path.join(dataPath, section);
@@ -96,6 +94,7 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
 
     let filesToProcess: string[] = [];
     let currentBasePath = sectionPath;
+    let sectionTitle = ""; // Initialize title variable
 
     if (
       fs.existsSync(directFilePath) &&
@@ -103,6 +102,11 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
     ) {
       filesToProcess = [`${section}.md`];
       currentBasePath = dataPath;
+
+      // Optional: Extract title from the standalone file's matter
+      const fileContent = fs.readFileSync(directFilePath, "utf8");
+      const { data } = matter(fileContent);
+      sectionTitle = data.title || "";
     } else if (
       fs.existsSync(sectionPath) &&
       fs.lstatSync(sectionPath).isDirectory()
@@ -113,11 +117,12 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
         const indexFile = fs.readFileSync(indexPath, "utf8");
         const { data: indexData } = matter(indexFile);
 
-        // 2. SMART PARSING: Handle the YAML menu structure
+        // CAPTURE THE TITLE HERE
+        sectionTitle = indexData.title || "";
+
         if (indexData.menu && Array.isArray(indexData.menu)) {
           filesToProcess = indexData.menu.map((item: any) => item.file);
         } else {
-          // Fallback for plain list
           filesToProcess = indexFile.split("\n").filter(Boolean);
         }
       } else {
@@ -125,6 +130,11 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
           .readdirSync(sectionPath)
           .filter((file) => file.endsWith(".md") && file !== "index.md");
       }
+    }
+
+    // PREPEND THE TITLE TO THE HTML CONTENT
+    if (sectionTitle) {
+      htmlContent += `<h2 class="section-title title-${section}">${sectionTitle}</h2>`;
     }
 
     for (const file of filesToProcess) {
@@ -141,57 +151,84 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
     }
   }
 
-  // 3. Construct full HTML
   const fullHtml = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>${config.header}</title>
-        <style>
-          ${rootCss}
-          ${themeCss}
-        </style>
-      </head>
-      <body>
-        <header>${config.header}</header>
-        <main>
-          ${htmlContent}
-        </main>
-        <footer>${config.footer}</footer>
-      </body>
-    </html>
-  `;
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        ${rootCss}
+        ${themeCss}
+      </style>
+    </head>
+    <body>
+      <main>${htmlContent}</main>
+    </body>
+  </html>
+`;
 
-  // 4. Generate PDF
-  const browser = await playwright.chromium.launch({
-    headless: true,
-  });
-
+  const browser = await playwright.chromium.launch({ headless: true });
   const page = await browser.newPage();
+
+  // WAIT UNTIL LOAD: Important for fonts/images
   await page.setContent(fullHtml, { waitUntil: "networkidle" });
 
-  // This will result in: /dist/pdf/<name>-hacker-cv.pdf
   const pdfPath = path.resolve(
     __dirname,
     `../../dist/pdf/${name}-${theme}-cv.pdf`,
   );
-
-  // Ensure the directory exists
   fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
+
+  // 3. The "Safe" Template Style
+  // We keep this minimal. No @imports, no complex fonts.
+  const baseTemplateStyle = `
+  <style>
+    /* Essential Reset */
+    * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
+    #header, #footer { padding: 0 !important; margin: 0 !important; }
+    
+    .container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      font-size: 10px;
+      font-family: monospace; /* Use a system font to prevent crashes */
+      padding: 5mm 10mm;
+    }
+
+    /* Inject the theme-specific sidecar CSS */
+    ${themePdfCss}
+  </style>
+`;
 
   await page.pdf({
     path: pdfPath,
     format: "A4",
     printBackground: true,
     displayHeaderFooter: true,
+    headerTemplate: `
+      ${baseTemplateStyle}
+      <div class="container header-area">
+        <span class="header-text">${config.header}</span>
+      </div>`,
+    footerTemplate: `
+      ${baseTemplateStyle}
+      <div class="container footer-area">
+        <span class="footer-text">${config.footer}</span>
+        <span class="page-info">
+          Page <span class="pageNumber"></span> / <span class="totalPages"></span>
+        </span>
+      </div>`,
+    margin: {
+      top: "25mm", // Increased to prevent body overlap
+      bottom: "20mm",
+      left: "0px", // Zero out Playwright margins so our CSS container controls the look
+      right: "0px",
+    },
   });
 
   await browser.close();
-
-  console.log(
-    `\x1b[32m%s\x1b[0m`,
-    `✔ PDF generated successfully at: ${pdfPath}`,
-  );
+  console.log(`\x1b[32m✔ PDF generated: ${pdfPath}\x1b[0m`);
 }
 
 main();

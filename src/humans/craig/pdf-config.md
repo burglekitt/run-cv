@@ -4,7 +4,7 @@ sections:
   - pdf-intro
   - career
   - education
-  - volunteer
+  - organizations
 header: "Craig Curtis - Senior Frontend Systems Architect"
 footer: "We built this PDF! burglekitt/run-cv"
 ---

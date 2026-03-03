@@ -1,0 +1,15 @@
+.header-area {
+  background-color: #f4ecd8;
+  color: #5b4636;
+  border-bottom: 2px double #5b4636;
+  justify-content: flex-start;
+  font-family: "Courier", serif;
+}
+
+.footer-area {
+  background-color: #f4ecd8;
+  color: #5b4636;
+  font-style: italic;
+  justify-content: center;
+  gap: 5mm;
+}

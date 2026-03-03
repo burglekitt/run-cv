@@ -1,4 +1,5 @@
 ---
+title: "Education"
 menu:
   - label: University of Minnesota (Twin Cities)
     file: umn.md

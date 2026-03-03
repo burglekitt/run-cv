@@ -1,4 +1,5 @@
 ---
+title: "Professional Experience"
 menu:
   - label: Travel Connect / Corivo
     file: travel-connect.md

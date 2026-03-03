@@ -1,0 +1,25 @@
+/* hacker-pdf.css */
+.header-area {
+  background-color: #0d0d0d;
+  color: #00ff00;
+  border-bottom: 2px solid #00ff00;
+  justify-content: center;
+}
+
+.footer-area {
+  background-color: #0d0d0d;
+  color: #00ff00;
+  border-top: 2px solid #00ff00;
+  justify-content: space-between;
+}
+
+.header-text,
+.footer-text {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.page-info {
+  color: #00ffff;
+}

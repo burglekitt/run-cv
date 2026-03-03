@@ -1,7 +1,16 @@
 /* root.css */
 @page {
   size: A4;
-  margin: 0mm;
+  margin: 0;
+  padding: 4mm;
+  width: 100%;
+  /* height: auto; */
+  margin: 5mm 0mm 5mm 0mm;
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
 
   @top-center {
     content: element(header);
@@ -11,13 +20,22 @@
     content: element(footer);
   }
 }
-
-header {
-  position: running(header);
-  text-align: center;
+.header {
+  background: blue;
+}
+.footer {
+  background: lime;
 }
 
-footer {
-  position: running(footer);
-  text-align: center;
+/* Ensure the main content doesn't try to overlap if margins fail */
+main {
+  display: block;
+  position: relative;
+}
+
+/* Avoid breaking a section or a heading across two pages */
+section,
+h1,
+h2 {
+  page-break-inside: avoid;
 }

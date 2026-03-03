@@ -1,4 +1,5 @@
 ---
+title: "Hobbies"
 menu:
   - label: Professional Competitive Napping
     file: pcn.md

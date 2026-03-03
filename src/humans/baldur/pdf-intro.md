@@ -1,5 +1,5 @@
 ---
-name: Baldurg
+name: Baldur
 role: Senior Frontend Architect
 ---
 

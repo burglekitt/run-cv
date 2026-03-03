@@ -63,12 +63,36 @@ Welcome to the terminal.
 
 3. Add the referenced markdown files (e.g., `experience.md`, `contact.md`) in the same folder.
 
-# Bumping versions
+## PDF Generation
 
-After you make changes, be sure:
+You can generate a PDF version of a CV using the `gen-pdf` script.
 
-- update package.json version number
-- run `npm i` to update package-lock.json
-- Commit your changes and push
-- run `git tag vx.x.x` and `git push origin vx.x.x`
-- In Git, go to the Tags view, ensure the new version is there, then go to Releases tab, click `Draft a new release`
+```bash
+npm run gen-pdf <name> [-- --theme <theme-name>]
+```
+
+- `<name>`: The name of the human (e.g., `craig`, `baldur`).
+- `--theme <theme-name>`: (Optional) Specify a theme. Defaults to `vintage`.
+
+Available themes:
+
+- `vintage`
+- `hacker`
+
+**Example:**
+
+```bash
+# Generate a PDF for 'craig' with the 'hacker' theme
+npm run gen-pdf craig -- --theme hacker
+```
+
+## Publishing to NPM
+
+After you make changes, be sure to:
+
+1.  **Bump Version:** Update the `version` number in `package.json`.
+2.  **Update Lockfile:** Run `npm install` to update `package-lock.json`.
+3.  **Commit Changes:** Commit your changes to git.
+4.  **Tag Version:** Run `git tag vx.x.x` (e.g., `v0.0.5`) and `git push origin vx.x.x`.
+5.  **Publish:** Run `npm publish`.
+6.  **Create Release:** In GitHub, go to the "Releases" tab and draft a new release from the tag you just pushed.

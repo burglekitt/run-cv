@@ -6,8 +6,8 @@ menu:
     file: career/index.md
   - label: Education
     file: education/index.md
-  - label: Volunteer
-    file: volunteer/index.md
+  - label: Organizations
+    file: organizations/index.md
   - label: Contact
     file: contact.md
 ---

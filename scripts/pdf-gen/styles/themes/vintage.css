@@ -1,13 +1,20 @@
+@import url("https://fonts.googleapis.com/css2?family=Special+Elite&display=swap");
+
+:root {
+  --font-main: "Special Elite", system-ui;
+}
+
 /* vintage.css */
 body {
-  font-family: "Times New Roman", serif;
+  font-family: "Special Elite", serif;
   background-color: #f5f5dc;
   color: #3d2b1f;
 }
+
 h1,
 h2,
 h3 {
-  font-family: "Georgia", serif;
+  font-family: "Special Elite", serif;
   color: #5a3a2a;
   border-bottom: 2px solid #c8b5a6;
 }
@@ -18,7 +25,32 @@ h1:first-of-type {
 }
 h1:not(:first-of-type) {
   font-size: 1em;
+  margin-top: 5mm;
 }
 a {
   color: #8b4513;
+}
+
+.section-title {
+  font-family: "Courier New", Courier, serif;
+  color: var(--vintage-ink);
+  font-size: 1.4em;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 2px;
+
+  /* The "Old Document" look: Double border bottom */
+  border-bottom: 3px double var(--vintage-ink);
+  padding-bottom: 2mm;
+  margin-top: 12mm;
+  margin-bottom: 6mm;
+  display: block;
+  width: 100%;
+
+  /* Ensure the title stays with its following content */
+  break-after: avoid;
+  page-break-after: avoid;
+}
+.section-title::before {
+  content: "> ";
 }
