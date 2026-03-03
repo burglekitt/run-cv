@@ -1,0 +1,23 @@
+/* root.css */
+@page {
+  size: A4;
+  margin: 0mm;
+
+  @top-center {
+    content: element(header);
+  }
+
+  @bottom-center {
+    content: element(footer);
+  }
+}
+
+header {
+  position: running(header);
+  text-align: center;
+}
+
+footer {
+  position: running(footer);
+  text-align: center;
+}

@@ -1,0 +1,22 @@
+/* hacker.css */
+body {
+  font-family: "Courier New", monospace;
+  background-color: #0d0d0d;
+  color: #00ff00;
+}
+h1,
+h2,
+h3 {
+  font-family: "Lucida Console", monospace;
+  color: #00ff00;
+  border-bottom: 1px solid #00ff00;
+}
+h1:first-of-type {
+  font-size: 1.2em;
+}
+h1:not(:first-of-type) {
+  font-size: 1em;
+}
+a {
+  color: #00ffff;
+}

@@ -1,0 +1,24 @@
+/* vintage.css */
+body {
+  font-family: "Times New Roman", serif;
+  background-color: #f5f5dc;
+  color: #3d2b1f;
+}
+h1,
+h2,
+h3 {
+  font-family: "Georgia", serif;
+  color: #5a3a2a;
+  border-bottom: 2px solid #c8b5a6;
+}
+
+/* all subsequent h1's need to be smaller */
+h1:first-of-type {
+  font-size: 1.2em;
+}
+h1:not(:first-of-type) {
+  font-size: 1em;
+}
+a {
+  color: #8b4513;
+}

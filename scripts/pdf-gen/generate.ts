@@ -3,22 +3,41 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
 import { marked } from "marked";
-import chromium from "@sparticuz/chromium";
+import meow from "meow";
 import playwright from "playwright-core";
 
 // 1. Setup paths
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const STYLES_DIR = path.resolve(__dirname, "styles");
 const HUMANS_DIR = path.resolve(__dirname, "../../src/humans");
 
+const cli = meow(
+  `
+    Usage
+      $ npm run gen-pdf <name>
+
+    Options
+      --theme, -t  Specify a theme (e.g., hacker, vintage)
+  `,
+  {
+    importMeta: import.meta,
+    flags: {
+      theme: {
+        type: "string",
+        shortFlag: "t", // Changed from alias: "t"
+        default: "vintage",
+      },
+    },
+  },
+);
+
 async function main() {
-  // 2. Extract the name from arguments (e.g., --craig becomes 'craig')
-  const args = process.argv.slice(2);
-  const name = args[0];
+  const [name] = cli.input;
+  const { theme } = cli.flags;
 
   if (!name) {
-    console.error("\x1b[31m%s\x1b[0m", "Error: No user specified.");
-    console.log("Usage: npm run gen-pdf <name>");
-    process.exit(1);
+    cli.showHelp();
+    return;
   }
 
   const userPath = path.join(HUMANS_DIR, name.toLowerCase());
@@ -37,22 +56,34 @@ async function main() {
     "\x1b[32m%s\x1b[0m",
     `✔ Found data tape for: ${name.toUpperCase()}`,
   );
-  console.log(`Starting PDF generation for ${userPath}...`);
+  console.log(`Starting PDF generation for ${userPath} using theme: ${theme}`);
 
   try {
-    // This is where your Playwright / Chromium logic will live
-    await generatePDF(name, userPath);
+    await generatePDF(name, userPath, theme);
   } catch (error) {
     console.error("Critical failure during PDF generation:", error);
     process.exit(1);
   }
 }
 
-async function generatePDF(name: string, dataPath: string) {
+async function generatePDF(name: string, dataPath: string, theme: string) {
   // 1. Read and parse pdf-config.md
   const configPath = path.join(dataPath, "pdf-config.md");
   const configFile = fs.readFileSync(configPath, "utf8");
   const { data: config } = matter(configFile);
+
+  // Read CSS files
+  const rootCss = fs.readFileSync(path.join(STYLES_DIR, "root.css"), "utf8");
+  const themePath = path.join(STYLES_DIR, "themes", `${theme}.css`);
+  const themeCss = fs.existsSync(themePath)
+    ? fs.readFileSync(themePath, "utf8")
+    : "";
+
+  if (!themeCss) {
+    console.warn(
+      `\x1b[33mWarning: Theme "${theme}" not found. Falling back to default styles.\x1b[0m`,
+    );
+  }
 
   let htmlContent = "";
 
@@ -117,28 +148,33 @@ async function generatePDF(name: string, dataPath: string) {
       <head>
         <title>${config.header}</title>
         <style>
-          /* Add styles here later */
+          ${rootCss}
+          ${themeCss}
         </style>
       </head>
       <body>
-        <header><h1>${config.header}</h1></header>
+        <header>${config.header}</header>
         <main>
           ${htmlContent}
         </main>
-        <footer><p>${config.footer}</p></footer>
+        <footer>${config.footer}</footer>
       </body>
     </html>
   `;
 
   // 4. Generate PDF
   const browser = await playwright.chromium.launch({
-    headless: true, // Set to false if you want to see the browser window
+    headless: true,
   });
 
   const page = await browser.newPage();
   await page.setContent(fullHtml, { waitUntil: "networkidle" });
 
-  const pdfPath = path.resolve(__dirname, `../../dist/pdf/${name}-cv.pdf`);
+  // This will result in: /dist/pdf/<name>-hacker-cv.pdf
+  const pdfPath = path.resolve(
+    __dirname,
+    `../../dist/pdf/${name}-${theme}-cv.pdf`,
+  );
 
   // Ensure the directory exists
   fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
@@ -147,7 +183,7 @@ async function generatePDF(name: string, dataPath: string) {
     path: pdfPath,
     format: "A4",
     printBackground: true,
-    displayHeaderFooter: false,
+    displayHeaderFooter: true,
   });
 
   await browser.close();
