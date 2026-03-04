@@ -71,7 +71,7 @@ You can generate a PDF version of a CV using the `gen-pdf` script.
 npm run gen-pdf <name> [-- --theme <theme-name>]
 ```
 
-- `<name>`: The name of the human (e.g., `craig`, `baldur`).
+- `<name>`: The name of the human.
 - `--theme <theme-name>`: (Optional) Specify a theme. Defaults to `vintage`.
 
 Available themes:
@@ -82,8 +82,8 @@ Available themes:
 **Example:**
 
 ```bash
-# Generate a PDF for 'craig' with the 'hacker' theme
-npm run gen-pdf craig -- --theme hacker
+# Generate a PDF for <name> with the 'hacker' theme
+npm run gen-pdf <name> -- --theme hacker
 ```
 
 ## Publishing to NPM

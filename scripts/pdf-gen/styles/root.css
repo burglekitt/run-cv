@@ -20,12 +20,6 @@
     content: element(footer);
   }
 }
-.header {
-  background: blue;
-}
-.footer {
-  background: lime;
-}
 
 /* Ensure the main content doesn't try to overlap if margins fail */
 main {

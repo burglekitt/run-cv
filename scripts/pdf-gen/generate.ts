@@ -73,16 +73,30 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
   const { data: config } = matter(configFile);
 
   const rootCss = fs.readFileSync(path.join(STYLES_DIR, "root.css"), "utf8");
-  const themeCssPath = path.join(STYLES_DIR, "themes", `${theme}.css`);
+  const themeDir = path.join(STYLES_DIR, "themes", theme);
+
+  // need to get now the scripts/pdf-gen/styles/themes/vintage/base.css
+  const themeCssPath = path.join(themeDir, "base.css");
   const themeCss = fs.existsSync(themeCssPath)
     ? fs.readFileSync(themeCssPath, "utf8")
-    : "";
+    : "/* No base theme styles found */";
 
-  // 2. NEW: Look for the Sidecar PDF CSS (e.g., hacker-pdf.css)
-  const themePdfCssPath = path.join(STYLES_DIR, "themes", `${theme}-pdf.css`);
+  // need to get new scripts/pdf-gen/styles/themes/vintage/header-footer.css
+  const themePdfCssPath = path.join(themeDir, "header-footer.css");
   const themePdfCss = fs.existsSync(themePdfCssPath)
     ? fs.readFileSync(themePdfCssPath, "utf8")
-    : "/* No theme-specific PDF styles found */";
+    : "/* No header/footer styles found */";
+
+  //   const themeCssPath = path.join(STYLES_DIR, "themes", `${theme}.css`);
+  //   const themeCss = fs.existsSync(themeCssPath)
+  //     ? fs.readFileSync(themeCssPath, "utf8")
+  //     : "";
+
+  // 2. NEW: Look for the Sidecar PDF CSS (e.g., hacker-pdf.css)
+  //   const themePdfCssPath = path.join(STYLES_DIR, "themes", `${theme}-pdf.css`);
+  //   const themePdfCss = fs.existsSync(themePdfCssPath)
+  //     ? fs.readFileSync(themePdfCssPath, "utf8")
+  //     : "/* No theme-specific PDF styles found */";
 
   let htmlContent = "";
 
