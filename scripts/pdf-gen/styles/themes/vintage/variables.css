@@ -1,0 +1,29 @@
+:root {
+  /* Theme variables */
+  --background: #f5f5dc;
+  --heading-text: #5a3a2a;
+  --heading-border: #c8b5a6;
+  --h1-font-size: 1em;
+  --h2-3-font-size: 0.9em;
+  --body-text: #3d2b1f;
+  --body-font-size: 0.8em;
+  --sub-text: #8b4513;
+  --link-text: #8b4513;
+  --section-title-text: var(--sub-text);
+  --section-title-bg: var(c8b5a6);
+  --section-title-font-size: 1em;
+  --section-bg: #f5f5dc;
+  --list-item-marker: #8b4513;
+  --list-style-type: disc;
+
+  /* Header Footer Variables */
+  --header-bg: #f4ecd8;
+  --header-text: #5b4636;
+  --header-font-size: 8pt;
+  --header-border-bottom: #5b4636;
+  --footer-bg: #f4ecd8;
+  --footer-text: #5b4636;
+  --footer-font-size: 6pt;
+  --footer-border-top: transparent;
+  --footer-page-text: #5b4636;
+}

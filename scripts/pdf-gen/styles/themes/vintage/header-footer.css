@@ -1,15 +1,23 @@
 .header-area {
-  background-color: #f4ecd8;
-  color: #5b4636;
-  border-bottom: 2px double #5b4636;
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  font-style: italic;
+  font-size: var(--header-font-size);
+  border-bottom: 2px double var(--header-border-bottom);
   justify-content: flex-start;
   font-family: "Courier", serif;
 }
 
 .footer-area {
-  background-color: #f4ecd8;
-  color: #5b4636;
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
   font-style: italic;
+  font-size: var(--footer-font-size);
+  /* border-top: 0px solid var(--footer-border-top); */
   justify-content: center;
   gap: 5mm;
+}
+
+.page-info {
+  color: var(--footer-page-text);
 }

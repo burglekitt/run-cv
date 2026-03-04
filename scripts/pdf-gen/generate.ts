@@ -76,6 +76,11 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
   const themeDir = path.join(STYLES_DIR, "themes", theme);
 
   // need to get now the scripts/pdf-gen/styles/themes/vintage/base.css
+  const themeVariablesCss = path.join(themeDir, "variables.css");
+  const themeVariables = fs.existsSync(themeVariablesCss)
+    ? fs.readFileSync(themeVariablesCss, "utf8")
+    : "/* No theme variables found */";
+
   const themeCssPath = path.join(themeDir, "base.css");
   const themeCss = fs.existsSync(themeCssPath)
     ? fs.readFileSync(themeCssPath, "utf8")
@@ -86,17 +91,6 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
   const themePdfCss = fs.existsSync(themePdfCssPath)
     ? fs.readFileSync(themePdfCssPath, "utf8")
     : "/* No header/footer styles found */";
-
-  //   const themeCssPath = path.join(STYLES_DIR, "themes", `${theme}.css`);
-  //   const themeCss = fs.existsSync(themeCssPath)
-  //     ? fs.readFileSync(themeCssPath, "utf8")
-  //     : "";
-
-  // 2. NEW: Look for the Sidecar PDF CSS (e.g., hacker-pdf.css)
-  //   const themePdfCssPath = path.join(STYLES_DIR, "themes", `${theme}-pdf.css`);
-  //   const themePdfCss = fs.existsSync(themePdfCssPath)
-  //     ? fs.readFileSync(themePdfCssPath, "utf8")
-  //     : "/* No theme-specific PDF styles found */";
 
   let htmlContent = "";
 
@@ -172,6 +166,7 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
       <meta charset="UTF-8">
       <style>
         ${rootCss}
+        ${themeVariables}
         ${themeCss}
       </style>
     </head>
@@ -196,24 +191,41 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
   // 3. The "Safe" Template Style
   // We keep this minimal. No @imports, no complex fonts.
   const baseTemplateStyle = `
-  <style>
-    /* Essential Reset */
-    * { box-sizing: border-box; -webkit-print-color-adjust: exact; }
-    #header, #footer { padding: 0 !important; margin: 0 !important; }
-    
-    .container {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      font-size: 10px;
-      font-family: monospace; /* Use a system font to prevent crashes */
-      padding: 5mm 10mm;
-    }
+    <style>
+        /* 0 - Base styles for header/footer templates */
+        ${themeVariables}
 
-    /* Inject the theme-specific sidecar CSS */
-    ${themePdfCss}
-  </style>
-`;
+        /* 1. Reset the template's internal root elements */
+        html, body {
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            width: 100%;
+        }
+
+        /* 2. Target the specific Chromium wrapper IDs */
+        #header, #footer {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+        
+        /* 3. Ensure the container is truly full-width */
+        .container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            font-size: 9pt;
+            font-family: monospace;
+            padding: 5mm 10mm;
+            box-sizing: border-box; /* Crucial for padding to not exceed 100% */
+            height: 10mm;
+        }
+
+        /* Inject the theme-specific sidecar CSS */
+        ${themePdfCss}
+    </style>
+    `;
 
   await page.pdf({
     path: pdfPath,
@@ -233,12 +245,6 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
           Page <span class="pageNumber"></span> / <span class="totalPages"></span>
         </span>
       </div>`,
-    margin: {
-      top: "25mm", // Increased to prevent body overlap
-      bottom: "20mm",
-      left: "0px", // Zero out Playwright margins so our CSS container controls the look
-      right: "0px",
-    },
   });
 
   await browser.close();

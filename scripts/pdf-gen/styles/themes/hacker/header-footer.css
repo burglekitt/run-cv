@@ -1,15 +1,17 @@
 /* hacker-pdf.css */
 .header-area {
-  background-color: #0d0d0d;
-  color: #00ff00;
-  border-bottom: 2px solid #00ff00;
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  font-size: var(--header-font-size);
+  border-bottom: 2px solid var(--header-border-bottom);
   justify-content: center;
 }
 
 .footer-area {
-  background-color: #0d0d0d;
-  color: #00ff00;
-  border-top: 2px solid #00ff00;
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  font-size: var(--footer-font-size);
+  border-top: 2px solid var(--footer-border-top);
   justify-content: space-between;
 }
 
@@ -21,5 +23,5 @@
 }
 
 .page-info {
-  color: #00ffff;
+  color: var(--footer-page-text);
 }

@@ -7,8 +7,9 @@
 /* vintage.css */
 body {
   font-family: "Special Elite", serif;
-  background-color: #f5f5dc;
-  color: #3d2b1f;
+  background-color: var(--background);
+  color: var(--body-text);
+  font-size: var(--body-font-size);
 }
 
 h1,
@@ -21,20 +22,21 @@ h3 {
 
 /* all subsequent h1's need to be smaller */
 h1:first-of-type {
-  font-size: 1.2em;
+  font-size: var(--h1-font-size);
 }
 h1:not(:first-of-type) {
-  font-size: 1em;
+  font-size: var(--h2-3-font-size);
   margin-top: 5mm;
 }
 a {
-  color: #8b4513;
+  color: var(--link-text);
 }
 
 .section-title {
   font-family: "Courier New", Courier, serif;
-  color: var(--vintage-ink);
-  font-size: 1.4em;
+  background-color: var(--section-title-bg);
+  color: var(--section-title-text);
+  font-size: var(--section-title-font-size);
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 2px;
@@ -53,4 +55,12 @@ a {
 }
 .section-title::before {
   content: "> ";
+}
+
+.cv-section {
+  background: var(--section-bg);
+}
+
+::marker {
+  color: var(--list-item-marker);
 }

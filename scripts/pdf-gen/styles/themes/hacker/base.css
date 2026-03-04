@@ -8,35 +8,36 @@
 /* hacker.css */
 body {
   font-family: "IBM Plex Mono", monospace;
-  background-color: #0d0d0d;
-  color: #00ff00;
+  background-color: var(--background);
+  color: var(--body-text);
+  font-size: var(--body-font-size);
 }
 
 h1,
 h2,
 h3 {
   font-family: "IBM Plex Mono", monospace;
-  color: #00ff00;
-  border-bottom: 1px solid #00ff00;
+  color: var(--heading-text);
+  border-bottom: 1px solid var(--heading-border);
 }
 h1:first-of-type {
-  font-size: 1.2em;
+  font-size: var(--h1-font-size);
 }
 h1:not(:first-of-type) {
-  font-size: 1em;
+  font-size: var(--h2-3-font-size);
   margin-top: 5mm;
 }
 a {
-  color: #00ffff;
+  color: var(--link-text);
 }
 
 .section-title {
   font-family: var(--font-main);
-  background-color: #00ff00; /* High contrast green bar */
-  color: #0d0d0d; /* Black text on green */
+  background-color: var(--section-title-bg); /* High contrast green bar */
+  color: var(--section-title-text); /* Black text on green */
   padding: 2mm 4mm;
   text-transform: uppercase;
-  font-size: 1.1em;
+  font-size: var(--section-title-font-size);
   margin-top: 8mm;
   margin-bottom: 4mm;
   display: inline-block; /* Keeps the background tight to the text */
@@ -50,4 +51,12 @@ a {
 /* Optional: Add a subtle prefix or scan-line effect to the titles */
 .section-title::before {
   content: "> ";
+}
+
+.cv-section {
+  background: var(--section-bg);
+}
+
+::marker {
+  color: var(--list-item-marker);
 }

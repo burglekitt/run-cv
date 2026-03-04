@@ -10,21 +10,15 @@
   body {
     margin: 0;
     padding: 0;
-  }
-
-  @top-center {
-    content: element(header);
-  }
-
-  @bottom-center {
-    content: element(footer);
+    -webkit-print-color-adjust: exact;
   }
 }
 
 /* Ensure the main content doesn't try to overlap if margins fail */
 main {
   display: block;
-  position: relative;
+  /* position: relative; */
+  width: 100%;
 }
 
 /* Avoid breaking a section or a heading across two pages */
