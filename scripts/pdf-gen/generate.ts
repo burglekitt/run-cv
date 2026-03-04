@@ -9,6 +9,7 @@ import playwright from "playwright-core";
 // 1. Setup paths
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const STYLES_DIR = path.resolve(__dirname, "styles");
+const THEMES_DIR = path.join(STYLES_DIR, "themes");
 const HUMANS_DIR = path.resolve(__dirname, "../../src/humans");
 
 const cli = meow(
@@ -18,79 +19,126 @@ const cli = meow(
 
     Options
       --theme, -t  Specify a theme (e.g., hacker, vintage)
+      --all        Generate PDFs for all humans and all themes
   `,
   {
     importMeta: import.meta,
     flags: {
       theme: {
         type: "string",
-        shortFlag: "t", // Changed from alias: "t"
+        shortFlag: "t",
         default: "vintage",
       },
+      all: { type: "boolean", default: false },
     },
   },
 );
 
-async function main() {
-  const [name] = cli.input;
-  const { theme } = cli.flags;
+// Helper to get directories only
+const getDirectories = (source: string) =>
+  fs
+    .readdirSync(source, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => dirent.name);
 
-  if (!name) {
+async function main() {
+  const [nameInput] = cli.input;
+  const { theme: themeInput, all } = cli.flags;
+
+  const browser = await playwright.chromium.launch({ headless: true });
+  const tasks: { name: string; theme: string }[] = [];
+
+  if (all) {
+    console.log(
+      "\x1b[36m%s\x1b[0m",
+      "🚀 Starting Bulk Build: All Humans, All Themes",
+    );
+    const humans = getDirectories(HUMANS_DIR);
+    const themes = getDirectories(THEMES_DIR);
+
+    for (const h of humans) {
+      for (const t of themes) {
+        tasks.push({ name: h, theme: t });
+      }
+    }
+  } else if (nameInput) {
+    tasks.push({ name: nameInput.toLowerCase(), theme: themeInput });
+  } else {
     cli.showHelp();
+    await browser.close();
     return;
   }
 
-  const userPath = path.join(HUMANS_DIR, name.toLowerCase());
+  // Process queue
+  for (const task of tasks) {
+    const userPath = path.join(HUMANS_DIR, task.name);
+    if (!fs.existsSync(userPath)) {
+      console.warn(
+        `\x1b[33m⚠ Skipping: Human "${task.name}" not found.\x1b[0m`,
+      );
+      continue;
+    }
 
-  // 3. Graceful Failure: Check if the directory exists
-  if (!fs.existsSync(userPath)) {
-    console.error(
-      "\x1b[31m%s\x1b[0m",
-      `Error: Human "${name}" not found in ${HUMANS_DIR}`,
-    );
-    console.log("Available humans:", fs.readdirSync(HUMANS_DIR).join(", "));
-    process.exit(1);
+    try {
+      await generatePDF(task.name, userPath, task.theme, browser);
+    } catch (error) {
+      console.error(
+        `\x1b[31m✖ Failed ${task.name} [${task.theme}]:\x1b[0m`,
+        error,
+      );
+    }
   }
 
-  console.log(
-    "\x1b[32m%s\x1b[0m",
-    `✔ Found data tape for: ${name.toUpperCase()}`,
-  );
-  console.log(`Starting PDF generation for ${userPath} using theme: ${theme}`);
-
-  try {
-    await generatePDF(name, userPath, theme);
-  } catch (error) {
-    console.error("Critical failure during PDF generation:", error);
-    process.exit(1);
-  }
+  await browser.close();
+  console.log("\x1b[32m%s\x1b[0m", "✔ All PDF tasks completed.");
 }
 
-async function generatePDF(name: string, dataPath: string, theme: string) {
+async function generatePDF(
+  name: string,
+  dataPath: string,
+  theme: string,
+  browser: playwright.Browser,
+) {
   // 1. Read config and main CSS
-  const configPath = path.join(dataPath, "pdf-config.md");
-  const configFile = fs.readFileSync(configPath, "utf8");
-  const { data: config } = matter(configFile);
+  //   const configPath = path.join(dataPath, "pdf-config.md");
+  //   const configFile = fs.readFileSync(configPath, "utf8");
+  //   const { data: config } = matter(configFile);
 
+  //   const rootCss = fs.readFileSync(path.join(STYLES_DIR, "root.css"), "utf8");
+  //   const themeDir = path.join(STYLES_DIR, "themes", theme);
+
+  //   // need to get now the scripts/pdf-gen/styles/themes/vintage/base.css
+  //   const themeVariablesCss = path.join(themeDir, "variables.css");
+  //   const themeVariables = fs.existsSync(themeVariablesCss)
+  //     ? fs.readFileSync(themeVariablesCss, "utf8")
+  //     : "/* No theme variables found */";
+
+  //   const themeCssPath = path.join(themeDir, "base.css");
+  //   const themeCss = fs.existsSync(themeCssPath)
+  //     ? fs.readFileSync(themeCssPath, "utf8")
+  //     : "/* No base theme styles found */";
+
+  //   // need to get new scripts/pdf-gen/styles/themes/vintage/header-footer.css
+  //   const themePdfCssPath = path.join(themeDir, "header-footer.css");
+  //   const themePdfCss = fs.existsSync(themePdfCssPath)
+  //     ? fs.readFileSync(themePdfCssPath, "utf8")
+  //     : "/* No header/footer styles found */";
+  // 1. Setup Theme Data
+  const themeDir = path.join(THEMES_DIR, theme);
+  const themeVariables = fs.readFileSync(
+    path.join(themeDir, "variables.css"),
+    "utf8",
+  );
+  const themeCss = fs.readFileSync(path.join(themeDir, "base.css"), "utf8");
+  const themePdfCss = fs.readFileSync(
+    path.join(themeDir, "header-footer.css"),
+    "utf8",
+  );
   const rootCss = fs.readFileSync(path.join(STYLES_DIR, "root.css"), "utf8");
-  const themeDir = path.join(STYLES_DIR, "themes", theme);
 
-  // need to get now the scripts/pdf-gen/styles/themes/vintage/base.css
-  const themeVariablesCss = path.join(themeDir, "variables.css");
-  const themeVariables = fs.existsSync(themeVariablesCss)
-    ? fs.readFileSync(themeVariablesCss, "utf8")
-    : "/* No theme variables found */";
-
-  const themeCssPath = path.join(themeDir, "base.css");
-  const themeCss = fs.existsSync(themeCssPath)
-    ? fs.readFileSync(themeCssPath, "utf8")
-    : "/* No base theme styles found */";
-
-  // need to get new scripts/pdf-gen/styles/themes/vintage/header-footer.css
-  const themePdfCssPath = path.join(themeDir, "header-footer.css");
-  const themePdfCss = fs.existsSync(themePdfCssPath)
-    ? fs.readFileSync(themePdfCssPath, "utf8")
-    : "/* No header/footer styles found */";
+  // 2. Parse Markdown (your existing logic)
+  const configPath = path.join(dataPath, "pdf-config.md");
+  const { data: config } = matter(fs.readFileSync(configPath, "utf8"));
 
   let htmlContent = "";
 
@@ -173,13 +221,10 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
     <body>
       <main>${htmlContent}</main>
     </body>
-  </html>
-`;
+  </html>`;
 
-  const browser = await playwright.chromium.launch({ headless: true });
+  // Use the existing browser instance
   const page = await browser.newPage();
-
-  // WAIT UNTIL LOAD: Important for fonts/images
   await page.setContent(fullHtml, { waitUntil: "networkidle" });
 
   const pdfPath = path.resolve(
@@ -188,67 +233,34 @@ async function generatePDF(name: string, dataPath: string, theme: string) {
   );
   fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
 
-  // 3. The "Safe" Template Style
-  // We keep this minimal. No @imports, no complex fonts.
   const baseTemplateStyle = `
     <style>
-        /* 0 - Base styles for header/footer templates */
         ${themeVariables}
-
-        /* 1. Reset the template's internal root elements */
-        html, body {
-            margin: 0;
-            padding: 0;
-            -webkit-print-color-adjust: exact;
-            width: 100%;
-        }
-
-        /* 2. Target the specific Chromium wrapper IDs */
-        #header, #footer {
-            padding: 0;
-            margin: 0;
-            width: 100%;
-        }
-        
-        /* 3. Ensure the container is truly full-width */
+        html, body { margin: 0; padding: 0; -webkit-print-color-adjust: exact; width: 100%; }
+        #header, #footer { padding: 0; margin: 0; width: 100%; }
         .container {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            font-size: 9pt;
-            font-family: monospace;
-            padding: 5mm 10mm;
-            box-sizing: border-box; /* Crucial for padding to not exceed 100% */
-            height: 10mm;
+            width: 100%; display: flex; align-items: center; font-size: 9pt;
+            font-family: monospace; padding: 5mm 10mm; box-sizing: border-box; height: 10mm;
         }
-
-        /* Inject the theme-specific sidecar CSS */
         ${themePdfCss}
-    </style>
-    `;
+    </style>`;
 
   await page.pdf({
     path: pdfPath,
     format: "A4",
     printBackground: true,
     displayHeaderFooter: true,
-    headerTemplate: `
-      ${baseTemplateStyle}
-      <div class="container header-area">
-        <span class="header-text">${config.header}</span>
-      </div>`,
-    footerTemplate: `
-      ${baseTemplateStyle}
+    headerTemplate: `${baseTemplateStyle}<div class="container header-area">${config.header}</div>`,
+    footerTemplate: `${baseTemplateStyle}
       <div class="container footer-area">
-        <span class="footer-text">${config.footer}</span>
-        <span class="page-info">
-          Page <span class="pageNumber"></span> / <span class="totalPages"></span>
-        </span>
+        <span>${config.footer}</span>
+        <span>Page <span class="pageNumber"></span> / <span class="totalPages"></span></span>
       </div>`,
+    margin: { top: "25mm", bottom: "20mm", left: "0px", right: "0px" },
   });
 
-  await browser.close();
-  console.log(`\x1b[32m✔ PDF generated: ${pdfPath}\x1b[0m`);
+  await page.close(); // Important: Close the tab, but keep the browser open
+  console.log(`\x1b[32m  ✔ Generated: ${name}-${theme}.pdf\x1b[0m`);
 }
 
 main();
