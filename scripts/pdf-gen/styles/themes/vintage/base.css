@@ -43,6 +43,7 @@ a {
 
   /* The "Old Document" look: Double border bottom */
   border-bottom: 3px double var(--vintage-ink);
+  padding-top: 2mm;
   padding-bottom: 2mm;
   margin-top: 12mm;
   margin-bottom: 6mm;

@@ -10,18 +10,18 @@
   --sub-text: #8b4513;
   --link-text: #8b4513;
   --section-title-text: var(--sub-text);
-  --section-title-bg: var(c8b5a6);
+  --section-title-bg: #e8dfc5;
   --section-title-font-size: 1em;
   --section-bg: #f5f5dc;
   --list-item-marker: #8b4513;
   --list-style-type: disc;
 
   /* Header Footer Variables */
-  --header-bg: #f4ecd8;
+  --header-bg: #e8dfc5;
   --header-text: #5b4636;
   --header-font-size: 8pt;
-  --header-border-bottom: #5b4636;
-  --footer-bg: #f4ecd8;
+  --header-border-bottom: #c8b5a6;
+  --footer-bg: #e8dfc5;
   --footer-text: #5b4636;
   --footer-font-size: 6pt;
   --footer-border-top: transparent;
