@@ -1,11 +1,11 @@
-/* Add to hacker.css */
+/* Add to terminal.css */
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap");
 
 :root {
   --font-main: "IBM Plex Mono", monospace;
 }
 
-/* hacker.css */
+/* terminal.css */
 body {
   font-family: "IBM Plex Mono", monospace;
   background-color: var(--background);

@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import fs from "node:fs";
+import path from "node:path";
 import { Fragment, useState, useEffect } from "react";
 import { Text, Box, useInput } from "ink";
 import SelectInput from "ink-select-input";
@@ -129,18 +131,52 @@ export function App({ name }: AppProps) {
   });
 
   async function handleSelect(item: { value: string }) {
-    if (!currentPage) return;
+    if (!currentPage || !human) return;
 
-    // 1. Find the index of the item we are about to click
+    // 1. Find the specific menu item object to check for extra metadata (like 'theme')
+    const selectedMenuItem = currentPage.menu?.find(
+      (m: any) => m.file === item.value || m.theme === item.value,
+    );
+
+    // 2. SAVE NAVIGATION MEMORY (Existing logic)
     const selectedIndex =
-      currentPage.menu?.findIndex((i) => i.file === item.value) ?? 0;
+      currentPage.menu?.findIndex(
+        (i: any) => i.file === item.value || i.theme === item.value,
+      ) ?? 0;
 
-    // 2. Save that index for this specific directory
     setNavigationMemory((prev) => ({
       ...prev,
       [currentPage.dir]: selectedIndex,
     }));
 
+    // 3. CHECK FOR DOWNLOAD ACTION
+    // If the menu item has a 'theme' property, it's a PDF download request
+    if (selectedMenuItem?.theme) {
+      const filename = `${human.name.toLowerCase()}-${selectedMenuItem.theme}-cv.pdf`;
+
+      /**
+       * PATH RESOLUTION:
+       * Since the CLI runs from /dist/cli.js, we look for /dist/pdf/
+       * process.cwd() usually refers to the root where the user runs the command.
+       */
+      const pdfPath = path.resolve(process.cwd(), "dist", "pdf", filename);
+
+      try {
+        if (fs.existsSync(pdfPath)) {
+          // This triggers the OS default PDF viewer (Preview, Chrome, Acrobat, etc.)
+          await open(pdfPath);
+        } else {
+          setError(
+            `FILE NOT FOUND: ${filename}. Run "npm run build:pdfs" first.`,
+          );
+        }
+      } catch (err) {
+        setError("FAILED TO OPEN PDF: " + (err as Error).message);
+      }
+      return; // Exit early so we don't try to navigate to a non-existent markdown file
+    }
+
+    // 4. STANDARD NAVIGATION (Existing logic)
     try {
       const nextPage = await getPage(currentPage.dir, item.value);
       setHistory((prev) => [...prev, nextPage]);
@@ -198,17 +234,15 @@ export function App({ name }: AppProps) {
                 <MarkdownRenderer content={currentPage.content} />
                 <Box marginTop={1}>
                   <SelectInput
-                    key={currentPage.dir} // CRITICAL: Forces a fresh mount with the correct initialIndex
-                    items={currentPage.menu.map((item) => ({
+                    key={currentPage.dir}
+                    items={currentPage.menu.map((item: any) => ({
                       label: item.label,
-                      value: item.file,
+                      // Use file if it exists, otherwise use the theme name as the value
+                      value: item.file || item.theme,
                     }))}
                     onSelect={handleSelect}
-                    // Remove onHighlight from here if it was only used to track menu position
-                    // setHighlightedItem is still fine for "hints" but don't save to menuFocus there
                     onHighlight={setHighlightedItem}
                     initialIndex={navigationMemory[currentPage.dir] || 0}
-                    limit={10}
                   />
                 </Box>
                 <Box marginTop={1} borderStyle="single" borderColor="gray">

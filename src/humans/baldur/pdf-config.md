@@ -1,5 +1,5 @@
 ---
-layout: "hacker"
+layout: "terminal"
 sections:
   - pdf-intro
   - career

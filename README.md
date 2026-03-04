@@ -77,13 +77,13 @@ npm run gen-pdf <name> [-- --theme <theme-name>]
 Available themes:
 
 - `vintage`
-- `hacker`
+- `terminal`
 
 **Example:**
 
 ```bash
-# Generate a PDF for <name> with the 'hacker' theme
-npm run gen-pdf <name> -- --theme hacker
+# Generate a PDF for <name> with the 'terminal' theme
+npm run gen-pdf <name> -- --theme terminal
 ```
 
 ## Publishing to NPM

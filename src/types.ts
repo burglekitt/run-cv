@@ -1,6 +1,7 @@
 export interface MenuItem {
   label: string;
-  file: string;
+  file?: string;
+  theme?: string;
 }
 
 export interface Page {

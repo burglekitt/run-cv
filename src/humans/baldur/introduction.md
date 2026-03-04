@@ -12,6 +12,8 @@ menu:
     file: volunteer/index.md
   - label: Contact
     file: contact.md
+  - label: Download CV
+    file: download-cv/index.md
 ---
 
 # ACCESS GRANTED

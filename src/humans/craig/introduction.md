@@ -10,6 +10,8 @@ menu:
     file: organizations/index.md
   - label: Contact
     file: contact.md
+  - label: Download CV
+    file: download-cv/index.md
 ---
 
 # SYSTEM ONLINE

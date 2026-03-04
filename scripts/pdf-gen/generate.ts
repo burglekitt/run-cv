@@ -18,7 +18,7 @@ const cli = meow(
       $ npm run gen-pdf <name>
 
     Options
-      --theme, -t  Specify a theme (e.g., hacker, vintage)
+      --theme, -t  Specify a theme (e.g., terminal, vintage)
       --all        Generate PDFs for all humans and all themes
   `,
   {
