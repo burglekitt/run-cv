@@ -18,6 +18,7 @@
   "scripts": {
     "build": "tsup src/cli.tsx --format esm --clean && cp -r src/humans dist/ && npm run build:pdfs",
     "build:pdfs": "tsx scripts/pdf-gen/generate.ts --all",
+    "predev": "npm run build:pdfs",
     "dev": "tsx src/cli.tsx",
     "test": "vitest run",
     "prepublishOnly": "npm run build",

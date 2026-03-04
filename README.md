@@ -86,13 +86,47 @@ Available themes:
 npm run gen-pdf <name> -- --theme terminal
 ```
 
-## Publishing to NPM
+## NPM Publishing & Versioning Guide
 
-After you make changes, be sure to:
+We use **Semantic Versioning (SemVer)** to manage releases. Instead of manually editing `package.json`, use the following automated workflow to ensure the repository tags and the NPM registry remain perfectly in sync.
 
-1.  **Bump Version:** Update the `version` number in `package.json`.
-2.  **Update Lockfile:** Run `npm install` to update `package-lock.json`.
-3.  **Commit Changes:** Commit your changes to git.
-4.  **Tag Version:** Run `git tag vx.x.x` (e.g., `v0.0.5`) and `git push origin vx.x.x`.
-5.  **Publish:** Run `npm publish`.
-6.  **Create Release:** In GitHub, go to the "Releases" tab and draft a new release from the tag you just pushed.
+### 1. Semantic Versioning Commands
+
+Decide which part of the version number ($X.Y.Z$) to increment based on your changes:
+
+| Command             | Result              | Use Case                                                              |
+| :------------------ | :------------------ | :-------------------------------------------------------------------- |
+| `npm version patch` | `0.0.x` → `0.0.x+1` | Bug fixes, style tweaks, or minor text updates.                       |
+| `npm version minor` | `0.x.0` → `0.x+1.0` | New features (e.g., a new PDF theme) that are backward-compatible.    |
+| `npm version major` | `x.0.0` → `x+1.0.0` | Breaking changes (e.g., changing the data tape structure or CLI API). |
+
+> **Note:** These commands automatically update `package.json` and `package-lock.json`, create a git commit, and generate a git tag.
+
+Example:
+
+```bash
+npm version patch -m "Release v%s: Fixed header spacing and updated blah theme"
+```
+
+### 2. Sync to GitHub (with tags)
+
+git push origin main --follow-tags
+
+### 3. Publish to npm
+
+```bash
+npm login
+npm publish
+```
+
+### 5. Finalize GitHub Release
+
+Go to the Releases tab on GitHub.
+
+Click Draft a new release.
+
+Select the Tag you just pushed (e.g., v0.0.6).
+
+Click Generate release notes to automatically pull in your commit history.
+
+Click Publish release

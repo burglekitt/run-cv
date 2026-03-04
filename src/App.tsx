@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
+import { fileURLToPath } from "node:url";
 import { Fragment, useState, useEffect } from "react";
 import { Text, Box, useInput } from "ink";
 import SelectInput from "ink-select-input";
@@ -19,6 +21,13 @@ import { theme } from "./styles/theme";
 interface AppProps {
   name?: string;
 }
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const isDev = __dirname.includes(`${path.sep}src`);
+const PDF_ROOT = isDev
+  ? path.resolve(__dirname, "..", "dist", "pdf")
+  : path.resolve(__dirname, "pdf");
 
 export function App({ name }: AppProps) {
   const [human, setHuman] = useState<HumanManifest | null>(null);
@@ -153,27 +162,29 @@ export function App({ name }: AppProps) {
     // If the menu item has a 'theme' property, it's a PDF download request
     if (selectedMenuItem?.theme) {
       const filename = `${human.name.toLowerCase()}-${selectedMenuItem.theme}-cv.pdf`;
+      const internalPdfPath = path.join(PDF_ROOT, filename);
 
-      /**
-       * PATH RESOLUTION:
-       * Since the CLI runs from /dist/cli.js, we look for /dist/pdf/
-       * process.cwd() usually refers to the root where the user runs the command.
-       */
-      const pdfPath = path.resolve(process.cwd(), "dist", "pdf", filename);
+      // Cross-platform way to target the Downloads folder
+      const downloadsFolder = path.join(os.homedir(), "Downloads");
+      const userDownloadPath = path.join(downloadsFolder, filename);
 
       try {
-        if (fs.existsSync(pdfPath)) {
-          // This triggers the OS default PDF viewer (Preview, Chrome, Acrobat, etc.)
-          await open(pdfPath);
+        if (fs.existsSync(internalPdfPath)) {
+          // 1. Copy to the actual Downloads folder
+          fs.copyFileSync(internalPdfPath, userDownloadPath);
+
+          // 2. Open the file from the Downloads folder
+          await open(userDownloadPath);
+
+          // Optionally: Update UI to show it was saved to Downloads
+          // (You'd need a state variable for a "Success" message)
         } else {
-          setError(
-            `FILE NOT FOUND: ${filename}. Run "npm run build:pdfs" first.`,
-          );
+          setError(`ARCHIVE ERROR: Resource ${filename} not found in package.`);
         }
       } catch (err) {
-        setError("FAILED TO OPEN PDF: " + (err as Error).message);
+        setError("SYSTEM FAILURE: " + (err as Error).message);
       }
-      return; // Exit early so we don't try to navigate to a non-existent markdown file
+      return;
     }
 
     // 4. STANDARD NAVIGATION (Existing logic)
