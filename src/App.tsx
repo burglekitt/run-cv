@@ -24,10 +24,30 @@ interface AppProps {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const isDev = __dirname.includes(`${path.sep}src`);
-const PDF_ROOT = isDev
-  ? path.resolve(__dirname, "..", "dist", "pdf")
-  : path.resolve(__dirname, "pdf");
+
+/**
+ * PATH LOGIC:
+ * 1. PROD: If we are in 'dist/index.js', the pdfs are in './pdf'
+ * 2. DEV: If we are in 'src/App.tsx', the pdfs are in '../dist/pdf'
+ */
+function getPdfRoot() {
+  // Try sibling 'pdf' folder (Production /dist/pdf)
+  const prodPath = path.resolve(__dirname, "pdf");
+  if (fs.existsSync(prodPath)) return prodPath;
+
+  // Try sibling 'dist/pdf' (Dev root)
+  const localDistPath = path.resolve(__dirname, "dist", "pdf");
+  if (fs.existsSync(localDistPath)) return localDistPath;
+
+  // Try upward 'dist/pdf' (Inside src/)
+  const devPath = path.resolve(__dirname, "..", "dist", "pdf");
+  if (fs.existsSync(devPath)) return devPath;
+
+  // Fallback to current directory as a last resort
+  return __dirname;
+}
+
+const PDF_ROOT = getPdfRoot();
 
 export function App({ name }: AppProps) {
   const [human, setHuman] = useState<HumanManifest | null>(null);
