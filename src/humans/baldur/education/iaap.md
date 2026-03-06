@@ -1,3 +1,9 @@
+---
+type: "education"
+title: "Intergalactic Academy of Applied Physics"
+subtitle: 'Student of "The Unexplainable" | Aug 2012 - May 2016'
+---
+
 # Intergalactic Academy of Applied Physics
 
 _Student of "The Unexplainable" | Aug 2012 - May 2016_

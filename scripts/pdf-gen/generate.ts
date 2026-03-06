@@ -99,30 +99,6 @@ async function generatePDF(
   theme: string,
   browser: playwright.Browser,
 ) {
-  // 1. Read config and main CSS
-  //   const configPath = path.join(dataPath, "pdf-config.md");
-  //   const configFile = fs.readFileSync(configPath, "utf8");
-  //   const { data: config } = matter(configFile);
-
-  //   const rootCss = fs.readFileSync(path.join(STYLES_DIR, "root.css"), "utf8");
-  //   const themeDir = path.join(STYLES_DIR, "themes", theme);
-
-  //   // need to get now the scripts/pdf-gen/styles/themes/vintage/base.css
-  //   const themeVariablesCss = path.join(themeDir, "variables.css");
-  //   const themeVariables = fs.existsSync(themeVariablesCss)
-  //     ? fs.readFileSync(themeVariablesCss, "utf8")
-  //     : "/* No theme variables found */";
-
-  //   const themeCssPath = path.join(themeDir, "base.css");
-  //   const themeCss = fs.existsSync(themeCssPath)
-  //     ? fs.readFileSync(themeCssPath, "utf8")
-  //     : "/* No base theme styles found */";
-
-  //   // need to get new scripts/pdf-gen/styles/themes/vintage/header-footer.css
-  //   const themePdfCssPath = path.join(themeDir, "header-footer.css");
-  //   const themePdfCss = fs.existsSync(themePdfCssPath)
-  //     ? fs.readFileSync(themePdfCssPath, "utf8")
-  //     : "/* No header/footer styles found */";
   // 1. Setup Theme Data
   const themeDir = path.join(THEMES_DIR, theme);
   const themeVariables = fs.readFileSync(
@@ -143,8 +119,6 @@ async function generatePDF(
   let htmlContent = "";
 
   for (const section of config.sections) {
-    if (section === "introduction") continue;
-
     const sectionPath = path.join(dataPath, section);
     const directFilePath = path.join(dataPath, `${section}.md`);
 
@@ -197,11 +171,36 @@ async function generatePDF(
       const filePath = path.join(currentBasePath, file.trim());
       if (fs.existsSync(filePath)) {
         const markdown = fs.readFileSync(filePath, "utf8");
-        const { content } = matter(markdown);
+        const { data, content } = matter(markdown);
+        let processed = content;
+
+        // If this is the introduction page and skills are defined, replace
+        // the placeholder comment with a horizontal badge list.
+        if (
+          section === "introduction" &&
+          data.skills &&
+          processed.includes("<!-- Skills badges -->")
+        ) {
+          const skillsArray: string[] = Array.isArray(data.skills)
+            ? data.skills
+            : String(data.skills)
+                .split(",")
+                .map((s) => s.trim())
+                .filter(Boolean);
+
+          const badges = skillsArray
+            .map((s) => `<span class="skill">${s}</span>`)
+            .join(" ");
+
+          processed = processed.replace(
+            "<!-- Skills badges -->",
+            `<div class="skills-container">${badges}</div>`,
+          );
+        }
 
         // Wrap in a section for CSS targeting
         htmlContent += `<section class="cv-section section-${section}">
-          ${marked(content)}
+          ${marked(processed)}
         </section>`;
       }
     }

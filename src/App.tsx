@@ -11,12 +11,13 @@ import BigText from "ink-big-text";
 import open from "open";
 import { getHuman, getPage } from "./cvParser";
 import { HumanManifest, Page } from "./types";
+import { theme } from "./styles/theme";
+import { SkillBadge } from "./components/SkillBadge";
 import { MarkdownRenderer } from "./components/MarkdownRenderer";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { AccessDenied } from "./components/AccessDenied";
 import { Hints } from "./components/Hints";
 import { grabEmailPattern, grabLinkedInPattern } from "./utils/regex-utils";
-import { theme } from "./styles/theme";
 
 interface AppProps {
   name?: string;
@@ -258,8 +259,19 @@ export function App({ name }: AppProps) {
             borderStyle="single"
             borderColor={theme.terminalGreenBright}
             padding={1}
-            minHeight={15}
+            flexDirection="column"
           >
+            {/* if we're showing the introduction page, render skill badges above */}
+            {currentPage.file === human?.file &&
+              human?.skills &&
+              human.skills.length > 0 && (
+                <Box flexDirection="row" flexWrap="wrap">
+                  {human.skills.map((skill) => (
+                    <SkillBadge key={skill} skill={skill} />
+                  ))}
+                </Box>
+              )}
+
             {currentPage.menu ? (
               <Box flexDirection="column">
                 <MarkdownRenderer content={currentPage.content} />

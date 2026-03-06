@@ -1,3 +1,9 @@
+---
+type: "career"
+title: "Opex ehf"
+subtitle: "Senior Software Engineer | Sep 2013 - Aug 2018"
+---
+
 # Opex ehf
 
 _Senior Software Engineer | Sep 2013 - Aug 2018_

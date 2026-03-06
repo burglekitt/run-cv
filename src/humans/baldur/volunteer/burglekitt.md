@@ -1,3 +1,9 @@
+---
+type: "volunteer"
+title: "Burglekitt (Engineering Collective)"
+subtitle: "Co-Founder & Core Architect | 2024.01 - Present"
+---
+
 # Burglekitt (Engineering Collective)
 
 _Co-Founder & Core Architect | 2024.01 - Present_
@@ -7,7 +13,7 @@ _Co-Founder & Core Architect | 2024.01 - Present_
 - Architecting modular, performance-first frontend systems and CLI environments.
 - **Note:** This terminal experience is powered by the Burglekitt ecosystem.
 
-- Tech stack: Node.js, NX Monorepos, TypeScript, Playwright, GitHub Actions.
+- Tech stack: React, Node.js, Ink, NX Monorepos, TypeScript, Playwright, GitHub Actions.
 - Focus: Developer Experience (DX), CLI Tooling, Automation, Software Craftsmanship.
 
 "Building the tools we wish we had."

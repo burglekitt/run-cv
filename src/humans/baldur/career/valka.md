@@ -1,3 +1,9 @@
+---
+type: "career"
+title: "Valka ehf"
+subtitle: "Software Engineer | Sep 2011 - Apr 2012"
+---
+
 # Valka ehf
 
 _Software Engineer | Sep 2011 - Apr 2012_

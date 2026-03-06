@@ -1,3 +1,9 @@
+---
+type: "career"
+title: "Aranea ehf"
+subtitle: "Software Engineer | Jan 2004 - Jan 2006"
+---
+
 # Aranea ehf
 
 _Software Engineer | Jan 2004 - Jan 2006_

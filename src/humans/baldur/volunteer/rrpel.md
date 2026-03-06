@@ -1,3 +1,9 @@
+---
+type: "volunteer"
+title: "Robot Rights & Pizza Ethics League"
+subtitle: "Automaton Empathy Specialist | June 2024 - Dec 2025"
+---
+
 # Robot Rights & Pizza Ethics League
 
 _Automaton Empathy Specialist | June 2024 - Dec 2025_

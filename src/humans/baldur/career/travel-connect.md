@@ -1,3 +1,9 @@
+---
+type: "career"
+title: "Travel Connect (Corivo)"
+subtitle: "Senior Software Engineer | Jan 2023 - Feb 2026"
+---
+
 # Travel Connect (Corivo)
 
 _Senior Software Engineer | Jan 2023 - Feb 2026_

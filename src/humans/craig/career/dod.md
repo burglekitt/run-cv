@@ -1,3 +1,9 @@
+---
+type: "career"
+title: "United States Department of Defense"
+subtitle: "Linguist | 2006.08 - 2009.04"
+---
+
 # United States Department of Defense
 
 _Linguist | 2006.08 - 2009.04_

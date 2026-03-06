@@ -7,6 +7,7 @@
   --h2-3-font-size: 0.9em;
   --body-text: #3d2b1f;
   --body-font-size: 0.8em;
+  --body-line-height: 1.5;
   --sub-text: #8b4513;
   --link-text: #8b4513;
   --section-title-text: var(--sub-text);
@@ -14,7 +15,10 @@
   --section-title-font-size: 1em;
   --section-bg: #f5f5dc;
   --list-item-marker: #8b4513;
+  --list-item-spacing: 0.5em;
   --list-style-type: disc;
+  /* corrected line height for lists; was accidentally set to 0.1mm which squashes items */
+  --list-line-height: 1.2;
 
   /* Header Footer Variables */
   --header-bg: #e8dfc5;

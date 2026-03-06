@@ -7,6 +7,7 @@
   --h2-3-font-size: 0.9em;
   --body-text: #00ff00;
   --body-font-size: 0.8em;
+  --body-line-height: 1.5;
   --sub-text: #00ffff;
   --link-text: #00ffff;
   --section-title-text: var(--background);
@@ -14,7 +15,9 @@
   --section-title-font-size: 1em;
   --section-bg: #0d0d0d;
   --list-item-marker: #008000;
+  --list-item-spacing: 0.5em;
   --list-style-type: square;
+  --list-line-height: 1.2;
 
   /* Header Footer Variables */
   --header-bg: #0d0d0d;

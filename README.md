@@ -43,7 +43,11 @@ npm run dev <name>
 ## Adding a New Human
 
 1. Create a folder in `src/humans/<name>`.
-2. Create an `introduction.md` file. This acts as the manifest and entry point.
+2. Create an `introduction.md` file. This acts as the manifest and entry point. (PDF generator now reads from this file; `pdf-intro.md` is deprecated.)
+   - Frontmatter may include a `skills:` field (comma-separated) and you can place
+     `<!-- Skills badges -->` somewhere in the body to have them rendered as
+     retro badges in the terminal and as styled labels above the intro text in
+     the PDF.
 
 ```markdown
 ---
@@ -65,7 +69,7 @@ Welcome to the terminal.
 
 ## PDF Generation
 
-You can generate a PDF version of a CV using the `gen-pdf` script.
+You can generate a PDF version of a CV using the `gen-pdf` script. It will include the text from `introduction.md` at the top; separate `pdf-intro.md` files are no longer required.
 
 ```bash
 npm run gen-pdf <name> [-- --theme <theme-name>]
@@ -74,10 +78,23 @@ npm run gen-pdf <name> [-- --theme <theme-name>]
 - `<name>`: The name of the human.
 - `--theme <theme-name>`: (Optional) Specify a theme. Defaults to `vintage`.
 
+A companion utility, `gen-json`, will export the same CV content as a
+plain JSON file (frontmatter plus markdown body). It ignores any UI/menu
+fields so you can consume it from other tools.
+
+```bash
+npm run gen-json <name> [-- --all]
+```
+
 Available themes:
 
 - `vintage`
 - `terminal`
+
+Each theme supports a handful of CSS variables you can tweak in
+`styles/themes/<theme>/base.css`. A new variable `--list-item-spacing` controls
+vertical distance between `<li>` elements (default 1 mm), so PDFs render
+without excessive gaps.
 
 **Example:**
 

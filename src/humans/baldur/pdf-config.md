@@ -1,7 +1,7 @@
 ---
 layout: "terminal"
 sections:
-  - pdf-intro
+  - introduction
   - career
   - education
   - hobbies

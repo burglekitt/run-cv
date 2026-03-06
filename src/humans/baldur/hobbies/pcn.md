@@ -1,3 +1,9 @@
+---
+type: "hobby"
+title: "Professional Competitive Napping"
+subtitle: "Gold Medalist | Jan 2020 - Present"
+---
+
 # Professional Competitive Napping
 
 _Gold Medalist | Jan 2020 - Present_

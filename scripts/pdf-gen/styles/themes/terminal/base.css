@@ -1,4 +1,6 @@
-/* Add to terminal.css */
+/* terminal theme (PDF) - stripped of window-style border to prevent double-border/cutoff issues */
+/* historically we mimicked a terminal window with a 2mm border; that caused
+   overlapping borders when combined with page margins, so it's been removed. */
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap");
 
 :root {
@@ -11,6 +13,7 @@ body {
   background-color: var(--background);
   color: var(--body-text);
   font-size: var(--body-font-size);
+  line-height: var(--body-line-height, 1.5);
 }
 
 h1,
@@ -59,4 +62,27 @@ a {
 
 ::marker {
   color: var(--list-item-marker);
+}
+
+ul {
+  line-height: var(--list-line-height, 1.2);
+}
+li {
+  margin-bottom: var(--list-item-spacing);
+}
+
+/* skill badges style */
+.skills-container {
+  margin-bottom: 4mm;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1mm 2mm;
+}
+.skill {
+  display: inline-block;
+  background-color: var(--skill-bg, #444);
+  color: var(--skill-text, #fff);
+  padding: 1mm 2mm;
+  border-radius: 1mm;
+  font-size: var(--skill-font-size, 8pt);
 }

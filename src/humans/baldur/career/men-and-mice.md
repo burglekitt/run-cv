@@ -1,3 +1,9 @@
+---
+type: "career"
+title: "Men&Mice"
+subtitle: "Software Engineer | Sep 2018 - Dec 2022"
+---
+
 # Men&Mice
 
 _Software Engineer | Sep 2018 - Dec 2022_

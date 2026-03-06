@@ -19,6 +19,10 @@ main {
   display: block;
   /* position: relative; */
   width: 100%;
+  /* we don't want any borders here; keep content flush with the page margins */
+  border: none !important;
+  margin: 0;
+  padding: 0;
 }
 
 /* Avoid breaking a section or a heading across two pages */

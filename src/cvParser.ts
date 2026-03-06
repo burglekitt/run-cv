@@ -26,9 +26,23 @@ export const getHuman = async (id: string): Promise<HumanManifest> => {
     const fileContent = await fs.readFile(introFile, "utf-8");
     const { data, content } = matter(fileContent);
 
+    // frontmatter 'skills' may be a comma-separated string or array
+    let skills: string[] | undefined;
+    if (data.skills) {
+      if (Array.isArray(data.skills)) {
+        skills = data.skills.map((s) => String(s).trim());
+      } else if (typeof data.skills === "string") {
+        skills = data.skills
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+    }
+
     return {
       name: data.name,
       role: data.role,
+      skills,
       menu: data.menu || [],
       content: content,
       dir: humanDir,

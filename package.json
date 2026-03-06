@@ -22,7 +22,8 @@
     "dev": "tsx src/cli.tsx",
     "test": "vitest run",
     "prepublishOnly": "npm run build",
-    "gen-pdf": "tsx scripts/pdf-gen/generate.ts"
+    "gen-pdf": "tsx scripts/pdf-gen/generate.ts",
+    "gen-json": "tsx scripts/json-gen/generate.ts"
   },
   "keywords": [],
   "author": "Craig O. Curtis & Baldur Páll Hólmgeirsson",

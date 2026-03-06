@@ -1,3 +1,8 @@
+---
+type: "contact"
+title: "COMMS"
+---
+
 # COMMS
 
 ## Secure Channel
