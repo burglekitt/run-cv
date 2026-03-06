@@ -1,12 +1,12 @@
 ---
 type: "education"
 title: "Yunnan Normal University"
-subtitle: "Advanced Chinese Certification | 2007.01 - 2008.01"
+subtitle: "Advanced Chinese Certification | 2007.09 - 2008.05"
 ---
 
 # Yunnan Normal University
 
-_Advanced Chinese Certification | 2007.01 - 2008.01_
+_Advanced Chinese Certification | 2007.09 - 2008.05_
 
 - Completed intensive certification focused on Military Affairs, Science, High Technology, and Ethnography.
 - Mastered technical and strategic vocabulary required for high-stakes governmental and technology liaison roles.

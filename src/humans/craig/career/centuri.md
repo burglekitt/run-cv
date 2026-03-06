@@ -6,7 +6,7 @@ subtitle: "Application Developer (Enterprise Mobile & Web) | 2016.02 - 2017.05"
 
 # Centuri Group, Inc.
 
-_Application Developer (Enterprise Mobile & Web) | 2016.02 - 201.05_?
+_Application Developer (Enterprise Mobile & Web) | 2016.02 - 2017.05_
 
 - Digitized field-workforce workflows for North America’s largest utility infrastructure firms.
 - Architected a modular "one-stop" dashboard using a nested-app architecture for field managers.
