@@ -1,6 +1,6 @@
 ---
 name: Craig
-role: Senior Frontend Systems Architect
+role: Senior Frontend Architect | Staff Frontend Engineer (Systems Architecture)
 skills: React, TypeScript, Next.js, Node.js, GraphQL, Temporal, Agentic AI
 menu:
   - label: Career
@@ -17,7 +17,7 @@ menu:
 
 <!-- Skills badges -->
 
-## Senior Frontend Systems Architect | Global Infrastructure & Agentic AI Orchestration
+## Senior Frontend Architect | Global Infrastructure & Agentic AI Orchestration
 
 Engineering high-availability platforms where data integrity is mission-critical. From U.S. DoD intelligence to global DDI infrastructure (DNS/DHCP/IPAM), I specialize in bridging complex backends with intuitive, resilient user experiences.
 

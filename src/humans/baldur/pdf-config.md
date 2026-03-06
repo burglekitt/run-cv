@@ -6,7 +6,7 @@ sections:
   - education
   - hobbies
   - volunteer
-header: "Baldur Páll Hólmgeirsson  - Senior Frontend Systems Architect"
+header: "Baldur Páll Hólmgeirsson  - Senior Frontend Engineer"
 footer: "We built this PDF! burglekitt/run-cv"
 ---
 
