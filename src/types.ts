@@ -11,6 +11,11 @@ export interface Page {
   file?: string;
 }
 
+export interface HighlightedItem {
+  label: string;
+  value: string;
+}
+
 export interface HumanManifest extends Page {
   name: string;
   role: string;

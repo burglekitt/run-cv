@@ -10,7 +10,13 @@ import Gradient from "ink-gradient";
 import BigText from "ink-big-text";
 import open from "open";
 import { getHuman, getPage } from "./cvParser";
-import { HumanManifest, Page } from "./types";
+import { HumanManifest, Page, HighlightedItem } from "./types";
+// navigation helpers moved out of App
+import {
+  computeNavigationHint,
+  computeHighlightedItem,
+  canDrillIn,
+} from "./utils/navigation-utils";
 import { theme } from "./styles/theme";
 import { SkillBadge } from "./components/SkillBadge";
 import { MarkdownRenderer } from "./components/MarkdownRenderer";
@@ -65,10 +71,8 @@ export function App({ name }: AppProps) {
   const [navigationMemory, setNavigationMemory] = useState<
     Record<string, number>
   >({});
-  const [highlightedItem, setHighlightedItem] = useState<{
-    label: string;
-    value: string;
-  } | null>(null);
+  const [highlightedItem, setHighlightedItem] =
+    useState<HighlightedItem | null>(null);
   const [contactInfo, setContactInfo] = useState<{
     email?: string;
     linkedin?: string;
@@ -95,6 +99,11 @@ export function App({ name }: AppProps) {
 
   const currentPage = history.length > 0 ? history[history.length - 1] : null;
   const isContactPage = currentPage?.file === "contact.md";
+
+  // keep the highlighted item in sync when the page changes
+  useEffect(() => {
+    setHighlightedItem(computeHighlightedItem(currentPage, navigationMemory));
+  }, [currentPage, navigationMemory]);
 
   useEffect(() => {
     if (isContactPage && currentPage) {
@@ -123,13 +132,14 @@ export function App({ name }: AppProps) {
   }, []);
 
   useInput((input, key) => {
-    // Global navigation should always work
-    if (key.escape || (input === "b" && history.length > 1)) {
+    // Global navigation should always work: back and quit
+    if (key.escape || key.leftArrow || (input === "b" && history.length > 1)) {
       if (history.length > 1) {
         setHistory((prev) => prev.slice(0, -1));
       }
       return;
     }
+
     if (input === "q" && (history.length <= 1 || error)) {
       // clear terminal first
       process.stdout.write("\x1Bc");
@@ -137,7 +147,7 @@ export function App({ name }: AppProps) {
       process.exit(0);
     }
 
-    // If on a contact page, handle command input
+    // If on a contact page, handle command input (left/right should not interfere)
     if (isContactPage) {
       if (input === "m" && contactInfo.email) {
         const subject = encodeURIComponent("Accessed run-cv, initiating comms");
@@ -154,14 +164,20 @@ export function App({ name }: AppProps) {
       return;
     }
 
-    // Handle space  selection for menu items
-    if (input === " " && currentPage?.menu && highlightedItem) {
-      handleSelect(highlightedItem);
+    // arrow-right should drill in when an item is highlighted and we have a non-empty menu
+    if (key.rightArrow && canDrillIn(currentPage, highlightedItem)) {
+      handleSelect(highlightedItem!);
+      return;
+    }
+
+    // Handle space selection for menu items as before
+    if (input === " " && canDrillIn(currentPage, highlightedItem)) {
+      handleSelect(highlightedItem!);
     }
   });
 
   async function handleSelect(item: { value: string }) {
-    if (!currentPage || !human) return;
+    if (!currentPage || !human || !item) return;
 
     // 1. Find the specific menu item object to check for extra metadata (like 'theme')
     const selectedMenuItem = currentPage.menu?.find(
@@ -216,6 +232,8 @@ export function App({ name }: AppProps) {
       setError((err as Error).message);
     }
   }
+
+  const navigationHint = computeNavigationHint(history);
 
   return (
     <Box
@@ -288,13 +306,11 @@ export function App({ name }: AppProps) {
                     initialIndex={navigationMemory[currentPage.dir] || 0}
                   />
                 </Box>
-                <Box marginTop={1} borderStyle="single" borderColor="gray">
-                  <Text color="gray">
-                    {history.length > 1
-                      ? "Press [ESC] or 'b' to go back"
-                      : "Press 'q' to quit"}
-                  </Text>
-                </Box>
+                {navigationHint && (
+                  <Box marginTop={1} borderStyle="single" borderColor="gray">
+                    <Text color="gray">{navigationHint}</Text>
+                  </Box>
+                )}
               </Box>
             ) : (
               <Box flexDirection="column">
@@ -311,17 +327,17 @@ export function App({ name }: AppProps) {
                     />
                   </Box>
                 )}
-                <Box
-                  marginTop={1}
-                  borderStyle="single"
-                  borderColor={theme.terminalGreyMedium}
-                >
-                  <Text color={theme.terminalGreyBright}>
-                    {history.length > 1
-                      ? "Press [ESC] or 'b' to go back"
-                      : "Press 'q' to quit"}
-                  </Text>
-                </Box>
+                {navigationHint && (
+                  <Box
+                    marginTop={1}
+                    borderStyle="single"
+                    borderColor={theme.terminalGreyMedium}
+                  >
+                    <Text color={theme.terminalGreyBright}>
+                      {navigationHint}
+                    </Text>
+                  </Box>
+                )}
               </Box>
             )}
           </Box>
