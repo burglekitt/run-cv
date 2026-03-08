@@ -10,7 +10,7 @@ import Gradient from "ink-gradient";
 import BigText from "ink-big-text";
 import open from "open";
 import { getHuman, getPage } from "./cvParser";
-import { HumanManifest, Page, HighlightedItem } from "./types";
+import type { HumanManifest, Page, HighlightedItem } from "./types";
 // navigation helpers moved out of App
 import {
   computeNavigationHint,
@@ -90,7 +90,7 @@ export function App({ name }: AppProps) {
         const data = await getHuman(name);
         setHuman(data);
         setHistory([data]);
-      } catch (err) {
+      } catch (_err) {
         setError("ACCESS DENIED");
       }
     };
@@ -219,7 +219,7 @@ export function App({ name }: AppProps) {
           setError(`ARCHIVE ERROR: Resource ${filename} not found in package.`);
         }
       } catch (err) {
-        setError("SYSTEM FAILURE: " + (err as Error).message);
+        setError(`SYSTEM·FAILURE:·${(err as Error).message}`);
       }
       return;
     }
@@ -267,9 +267,8 @@ export function App({ name }: AppProps) {
         <AccessDenied />
       ) : human && currentPage ? (
         <Fragment>
-          <Box marginBottom={1}>
+          <Box marginBottom={1} flexDirection="column">
             <Text color={theme.terminalGreenBright}>User: {human.name}</Text>
-            <Text color="gray"> | </Text>
             <Text color={theme.terminalGreenMedium}>Role: {human.role}</Text>
           </Box>
 

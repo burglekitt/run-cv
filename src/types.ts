@@ -21,3 +21,31 @@ export interface HumanManifest extends Page {
   role: string;
   skills?: string[]; // parsed from frontmatter comma-separated list
 }
+
+import type { Tokens } from "marked";
+
+export type ListItemWithId = Omit<Tokens.ListItem, "tokens"> & {
+	id: string;
+	tokens: TokenWithId[];
+};
+
+type GenericToken = Exclude<
+	Tokens.Token,
+	| Tokens.Heading
+	| Tokens.Paragraph
+	| Tokens.List
+	| Tokens.Strong
+	| Tokens.Em
+	| Tokens.Text
+	| Tokens.Space
+>;
+
+export type TokenWithId =
+	| (Omit<Tokens.Heading, "tokens"> & { id: string; tokens: TokenWithId[] })
+	| (Omit<Tokens.Paragraph, "tokens"> & { id: string; tokens: TokenWithId[] })
+	| (Omit<Tokens.List, "items"> & { id: string; items: ListItemWithId[] })
+	| (Omit<Tokens.Strong, "tokens"> & { id: string; tokens: TokenWithId[] })
+	| (Omit<Tokens.Em, "tokens"> & { id: string; tokens: TokenWithId[] })
+	| (Tokens.Text & { id: string })
+	| (Tokens.Space & { id: string })
+	| (GenericToken & { id: string });

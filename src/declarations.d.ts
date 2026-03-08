@@ -1,7 +1,7 @@
 declare module "gray-matter" {
   function matter(
     input: string | Buffer,
-    options?: any,
-  ): { data: any; content: string };
+    options?: unknown,
+  ): { data: Record<string, unknown>; content: string };
   export = matter;
 }

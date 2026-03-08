@@ -21,6 +21,11 @@
     "predev": "npm run build:pdfs",
     "dev": "tsx src/cli.tsx",
     "test": "vitest run",
+    "format": "biome format --write",
+    "format:check": "biome format --dry-run",
+    "lint": "biome lint",
+    "lint:fix": "biome lint --apply-unsafe",
+    "sort-imports": "biome assist --write",
     "prepublishOnly": "npm run build",
     "gen-pdf": "tsx scripts/pdf-gen/generate.ts",
     "gen-json": "tsx scripts/json-gen/generate.ts"
@@ -39,18 +44,30 @@
     "meow": "^12.1.1",
     "nodemailer": "^8.0.1",
     "open": "^10.2.0",
-    "react": "^18.2.0"
+    "react": "^18.2.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.6",
     "@types/marked": "^6.0.0",
     "@types/node": "^20.6.2",
     "@types/nodemailer": "^6.4.10",
     "@types/react": "^18.2.22",
+    "@types/uuid": "^10.0.0",
+    "husky": "^9.1.7",
     "ink-testing-library": "^3.0.0",
+    "lint-staged": "^16.3.2",
     "playwright-core": "^1.58.2",
     "tsup": "^8.0.1",
     "tsx": "^4.7.1",
     "typescript": "^5.2.2",
     "vitest": "^4.0.18"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,md}": [
+      "biome format --write",
+      "biome assist --write",
+      "git add"
+    ]
   }
 }

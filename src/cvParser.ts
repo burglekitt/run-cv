@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
-import { HumanManifest, Page } from "./types";
+import type { HumanManifest, Page } from "./types";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -48,7 +48,7 @@ export const getHuman = async (id: string): Promise<HumanManifest> => {
       dir: humanDir,
       file: path.basename(introFile),
     };
-  } catch (error) {
+  } catch (_error) {
     let debugMsg = `\nChecked path: ${introFile}`;
     try {
       await fs.access(humansDir);
@@ -80,7 +80,7 @@ export const getPage = async (baseDir: string, file: string): Promise<Page> => {
       dir: fileDir,
       file,
     };
-  } catch (error) {
+  } catch (_error) {
     throw new Error(`Data tape corrupted. Could not read file: ${filePath}`);
   }
 };

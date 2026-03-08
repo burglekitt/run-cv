@@ -15,7 +15,6 @@ beforeEach(() => {
 // helper to intercept written JSON without touching disk
 function captureWrite() {
   const calls: Array<{ path: string; data: string }> = [];
-  const original = fs.writeFileSync;
   const spy = vi
     .spyOn(fs, "writeFileSync")
     .mockImplementation((p: any, data: any) => {

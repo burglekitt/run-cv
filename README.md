@@ -100,7 +100,16 @@ without excessive gaps.
 
 ```bash
 # Generate a PDF for <name> with the 'terminal' theme
-npm run gen-pdf <name> -- --theme terminal
+  npm run gen-pdf <name> -- --theme terminal
+```
+
+## Linting and Commits
+
+We use Biome for linting/formatting, and Husky for precommit hooks.
+To bypass biome formatting/linting, run:
+
+```bash
+git commit --no-verify -m "Commit msg"
 ```
 
 ## NPM Publishing & Versioning Guide

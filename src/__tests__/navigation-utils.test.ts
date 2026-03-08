@@ -3,7 +3,7 @@ import {
   computeHighlightedItem,
   canDrillIn,
 } from "../utils/navigation-utils";
-import { Page, HighlightedItem } from "../types";
+import type { Page, HighlightedItem } from "../types";
 
 describe("navigation hint logic", () => {
   const somePage: Page = { dir: "foo", file: "foo.md", content: "", menu: [] };

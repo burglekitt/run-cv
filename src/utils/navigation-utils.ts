@@ -1,4 +1,4 @@
-import { Page, HighlightedItem } from "../types";
+import type { Page, HighlightedItem } from "../types";
 
 export function computeNavigationHint(history: Page[]): string {
   // only show instructions on the very first, root page
