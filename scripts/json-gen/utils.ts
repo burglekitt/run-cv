@@ -17,6 +17,11 @@ export interface SectionInfo {
   basePath: string;
 }
 
+interface MenuItem {
+  file: string;
+  label?: string;
+}
+
 /**
  * Given the path to a human's folder and the list of sections from pdf-config,
  * resolve details about each section: its title (if present), which markdown
@@ -47,7 +52,7 @@ export function resolveSections(
       // Optional: title from frontmatter
       const fileContent = fs.readFileSync(directFilePath, "utf8");
       const { data } = matter(fileContent);
-      sectionTitle = data.title || "";
+      sectionTitle = (data.title as string) || section;
     } else if (
       fs.existsSync(sectionPath) &&
       fs.lstatSync(sectionPath).isDirectory()
@@ -57,10 +62,10 @@ export function resolveSections(
       if (fs.existsSync(indexPath)) {
         const indexFile = fs.readFileSync(indexPath, "utf8");
         const { data: indexData } = matter(indexFile);
-        sectionTitle = indexData.title || "";
+        sectionTitle = (indexData.title as string) || section;
 
         if (indexData.menu && Array.isArray(indexData.menu)) {
-          filesToProcess = indexData.menu.map((item: any) => item.file);
+          filesToProcess = indexData.menu.map((item: MenuItem) => item.file);
         } else {
           filesToProcess = indexFile.split("\n").filter(Boolean);
         }

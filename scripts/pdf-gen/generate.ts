@@ -118,7 +118,7 @@ async function generatePDF(
 
   let htmlContent = "";
 
-  for (const section of config.sections) {
+  for (const section of config.sections as string[]) {
     const sectionPath = path.join(dataPath, section);
     const directFilePath = path.join(dataPath, `${section}.md`);
 
@@ -136,7 +136,7 @@ async function generatePDF(
       // Optional: Extract title from the standalone file's matter
       const fileContent = fs.readFileSync(directFilePath, "utf8");
       const { data } = matter(fileContent);
-      sectionTitle = data.title || "";
+      sectionTitle = (data.title as string) || section;
     } else if (
       fs.existsSync(sectionPath) &&
       fs.lstatSync(sectionPath).isDirectory()
@@ -148,10 +148,10 @@ async function generatePDF(
         const { data: indexData } = matter(indexFile);
 
         // CAPTURE THE TITLE HERE
-        sectionTitle = indexData.title || "";
+        sectionTitle = (indexData.title as string) || section;
 
         if (indexData.menu && Array.isArray(indexData.menu)) {
-          filesToProcess = indexData.menu.map((item: any) => item.file);
+          filesToProcess = indexData.menu.map((item: { file: string }) => item.file);
         } else {
           filesToProcess = indexFile.split("\n").filter(Boolean);
         }

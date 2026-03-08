@@ -10,7 +10,7 @@ import Gradient from "ink-gradient";
 import BigText from "ink-big-text";
 import open from "open";
 import { getHuman, getPage } from "./cvParser";
-import type { HumanManifest, Page, HighlightedItem } from "./types";
+import type { HumanManifest, Page, HighlightedItem, MenuItem } from "./types";
 // navigation helpers moved out of App
 import {
   computeNavigationHint,
@@ -165,14 +165,14 @@ export function App({ name }: AppProps) {
     }
 
     // arrow-right should drill in when an item is highlighted and we have a non-empty menu
-    if (key.rightArrow && canDrillIn(currentPage, highlightedItem)) {
-      handleSelect(highlightedItem!);
+    if (key.rightArrow && canDrillIn(currentPage, highlightedItem) && highlightedItem) {
+      handleSelect(highlightedItem);
       return;
     }
 
     // Handle space selection for menu items as before
-    if (input === " " && canDrillIn(currentPage, highlightedItem)) {
-      handleSelect(highlightedItem!);
+    if (input === " " && canDrillIn(currentPage, highlightedItem) && highlightedItem) {
+      handleSelect(highlightedItem);
     }
   });
 
@@ -181,13 +181,13 @@ export function App({ name }: AppProps) {
 
     // 1. Find the specific menu item object to check for extra metadata (like 'theme')
     const selectedMenuItem = currentPage.menu?.find(
-      (m: any) => m.file === item.value || m.theme === item.value,
+      (m: MenuItem) => m.file === item.value || m.theme === item.value,
     );
 
     // 2. SAVE NAVIGATION MEMORY (Existing logic)
     const selectedIndex =
       currentPage.menu?.findIndex(
-        (i: any) => i.file === item.value || i.theme === item.value,
+        (i: MenuItem) => i.file === item.value || i.theme === item.value,
       ) ?? 0;
 
     setNavigationMemory((prev) => ({
@@ -295,10 +295,10 @@ export function App({ name }: AppProps) {
                 <Box marginTop={1}>
                   <SelectInput
                     key={currentPage.dir}
-                    items={currentPage.menu.map((item: any) => ({
+                    items={currentPage.menu.map((item: MenuItem) => ({
                       label: item.label,
                       // Use file if it exists, otherwise use the theme name as the value
-                      value: item.file || item.theme,
+                      value: item.file || item.theme || "",
                     }))}
                     onSelect={handleSelect}
                     onHighlight={setHighlightedItem}

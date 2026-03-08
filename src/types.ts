@@ -22,6 +22,17 @@ export interface HumanManifest extends Page {
   skills?: string[]; // parsed from frontmatter comma-separated list
 }
 
+export interface JSONEntry {
+  section: string;
+  frontmatter: Record<string, unknown>;
+  content: string;
+}
+
+export interface JSONOutput {
+  name: string;
+  entries: JSONEntry[];
+}
+
 import type { Tokens } from "marked";
 
 export type ListItemWithId = Omit<Tokens.ListItem, "tokens"> & {
@@ -29,8 +40,10 @@ export type ListItemWithId = Omit<Tokens.ListItem, "tokens"> & {
 	tokens: TokenWithId[];
 };
 
+import type { Token as MarkedToken } from "marked";
+
 type GenericToken = Exclude<
-	Tokens.Token,
+	MarkedToken,
 	| Tokens.Heading
 	| Tokens.Paragraph
 	| Tokens.List

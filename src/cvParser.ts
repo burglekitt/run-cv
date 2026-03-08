@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
-import type { HumanManifest, Page } from "./types";
+import type { HumanManifest, Page, MenuItem } from "./types";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -40,10 +40,10 @@ export const getHuman = async (id: string): Promise<HumanManifest> => {
     }
 
     return {
-      name: data.name,
-      role: data.role,
+      name: data.name as string,
+      role: data.role as string,
       skills,
-      menu: data.menu || [],
+      menu: (data.menu as MenuItem[] || []),
       content: content,
       dir: humanDir,
       file: path.basename(introFile),
@@ -76,7 +76,7 @@ export const getPage = async (baseDir: string, file: string): Promise<Page> => {
     const { data, content } = matter(fileContent);
     return {
       content,
-      menu: data.menu,
+      menu: data.menu as MenuItem[],
       dir: fileDir,
       file,
     };

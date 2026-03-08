@@ -4,7 +4,8 @@ import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
 import meow from "meow";
 
-import { getDirectories, resolveSections, SectionInfo } from "./utils";
+import { getDirectories, resolveSections, type SectionInfo } from "./utils";
+import type { JSONOutput } from "../../src/types";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HUMANS_DIR = path.resolve(__dirname, "../../src/humans");
@@ -71,12 +72,12 @@ export async function generateJSON(name: string) {
   }
 
   const { data: config } = matter(fs.readFileSync(configPath, "utf8"));
-  const sections: SectionInfo[] = resolveSections(userPath, config.sections);
+  const sections: SectionInfo[] = resolveSections(userPath, config.sections as string[]);
 
   // Build a flatter, CV‑centric structure.
   // We no longer care about the terminal UI menu or file names – the
   // consumer just needs frontmatter fields and the raw markdown body.
-  const output: any = { name, entries: [] };
+  const output: JSONOutput = { name, entries: [] };
 
   for (const sect of sections) {
     for (const file of sect.files) {
