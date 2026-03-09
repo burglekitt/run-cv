@@ -103,15 +103,6 @@ without excessive gaps.
   npm run gen-pdf <name> -- --theme terminal
 ```
 
-## Linting and Commits
-
-We use Biome for linting/formatting, and Husky for precommit hooks.
-To bypass biome formatting/linting, run:
-
-```bash
-git commit --no-verify -m "Commit msg"
-```
-
 ## NPM Publishing & Versioning Guide
 
 We use **Semantic Versioning (SemVer)** to manage releases. Instead of manually editing `package.json`, use the following automated workflow to ensure the repository tags and the NPM registry remain perfectly in sync.

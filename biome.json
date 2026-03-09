@@ -15,7 +15,6 @@
       "!!.npmignore",
       "!!.gitignore",
       "!!**/.github",
-      "!!**/.husky",
       "!!.github",
       "!!AGENTS.md"
     ]

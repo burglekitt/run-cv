@@ -1,6 +1,6 @@
 {
   "name": "run-cv",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "type": "module",
   "main": "dist/cli.js",
   "bin": {
@@ -27,7 +27,6 @@
     "biome:all": "biome format --write && biome lint --write",
     "gen-pdf": "tsx scripts/pdf-gen/generate.ts",
     "gen-json": "tsx scripts/json-gen/generate.ts",
-    "prepare": "husky",
     "prepublishOnly": "npm run build"
   },
   "keywords": [],
@@ -54,18 +53,11 @@
     "@types/nodemailer": "^6.4.10",
     "@types/react": "^19.2.14",
     "@types/uuid": "^10.0.0",
-    "husky": "^9.1.7",
     "ink-testing-library": "^4.0.0",
-    "lint-staged": "^16.3.2",
     "playwright-core": "^1.58.2",
     "tsup": "^8.0.1",
     "tsx": "^4.7.1",
     "typescript": "^5.2.2",
     "vitest": "^4.0.18"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,md}": [
-      "biome check"
-    ]
   }
 }
