@@ -1,28 +1,28 @@
 #!/usr/bin/env node
 import fs from "node:fs";
-import path from "node:path";
 import os from "node:os";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { Fragment, useState, useEffect } from "react";
-import { Text, Box, useInput } from "ink";
-import SelectInput from "ink-select-input";
-import Gradient from "ink-gradient";
+import { Box, Text, useInput } from "ink";
 import BigText from "ink-big-text";
+import Gradient from "ink-gradient";
+import SelectInput from "ink-select-input";
 import open from "open";
-import { getHuman, getPage } from "./cvParser";
-import type { HumanManifest, Page, HighlightedItem, MenuItem } from "./types";
-// navigation helpers moved out of App
-import {
-  computeNavigationHint,
-  computeHighlightedItem,
-  canDrillIn,
-} from "./utils/navigation-utils";
-import { theme } from "./styles/theme";
-import { SkillBadge } from "./components/SkillBadge";
-import { MarkdownRenderer } from "./components/MarkdownRenderer";
-import { LoadingScreen } from "./components/LoadingScreen";
+import { Fragment, useEffect, useState } from "react";
 import { AccessDenied } from "./components/AccessDenied";
 import { Hints } from "./components/Hints";
+import { LoadingScreen } from "./components/LoadingScreen";
+import { MarkdownRenderer } from "./components/MarkdownRenderer";
+import { SkillBadge } from "./components/SkillBadge";
+import { getHuman, getPage } from "./cvParser";
+import { theme } from "./styles/theme";
+import type { HighlightedItem, HumanManifest, MenuItem, Page } from "./types";
+// navigation helpers moved out of App
+import {
+  canDrillIn,
+  computeHighlightedItem,
+  computeNavigationHint,
+} from "./utils/navigation-utils";
 import { grabEmailPattern, grabLinkedInPattern } from "./utils/regex-utils";
 
 interface AppProps {

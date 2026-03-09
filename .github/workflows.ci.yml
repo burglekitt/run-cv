@@ -9,7 +9,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
       - run: npm install
-      - run: npm run lint
+      - run: biome check --no-progress
       - run: npm run test
       - run: npm run build

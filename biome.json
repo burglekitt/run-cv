@@ -6,7 +6,16 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!!**/dist"]
+    "includes": [
+      "**",
+      "!!**/dist",
+      "!!**/node_modules",
+      "!!**/tmp",
+      "!!package.json",
+      "!!.npmignore",
+      "!!.gitignore",
+      "!!AGENTS.md"
+    ]
   },
   "formatter": {
     "enabled": true,

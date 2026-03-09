@@ -16,19 +16,19 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup src/cli.tsx --format esm --clean && cp -r src/humans dist/ && npm run build:pdfs",
+    "build": "biome check && tsup src/cli.tsx --format esm --clean && cp -r src/humans dist/ && npm run build:pdfs",
     "build:pdfs": "tsx scripts/pdf-gen/generate.ts --all",
     "predev": "npm run build:pdfs",
     "dev": "tsx src/cli.tsx",
     "test": "vitest run",
     "format": "biome format --write",
-    "format:check": "biome format --dry-run",
     "lint": "biome lint",
-    "lint:fix": "biome lint --apply-unsafe",
-    "sort-imports": "biome assist --write",
-    "prepublishOnly": "npm run build",
+    "lint:fix": "biome lint --write",
+    "biome:all": "biome format --write && biome lint --write",
     "gen-pdf": "tsx scripts/pdf-gen/generate.ts",
-    "gen-json": "tsx scripts/json-gen/generate.ts"
+    "gen-json": "tsx scripts/json-gen/generate.ts",
+    "prepare": "husky",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [],
   "author": "Craig O. Curtis & Baldur Páll Hólmgeirsson",
@@ -65,9 +65,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md}": [
-      "biome format --write",
-      "biome assist --write",
-      "git add"
+      "biome check"
     ]
   }
 }

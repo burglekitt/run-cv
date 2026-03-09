@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
-import type { HumanManifest, Page, MenuItem } from "./types";
+import type { HumanManifest, MenuItem, Page } from "./types";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
