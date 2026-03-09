@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { Box, Text } from "ink";
+import { useEffect, useState } from "react";
 
 const LOADING_TIME = 200;
 const UPDATE_INTERVAL = LOADING_TIME / 100;

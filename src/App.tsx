@@ -165,13 +165,21 @@ export function App({ name }: AppProps) {
     }
 
     // arrow-right should drill in when an item is highlighted and we have a non-empty menu
-    if (key.rightArrow && canDrillIn(currentPage, highlightedItem) && highlightedItem) {
+    if (
+      key.rightArrow &&
+      canDrillIn(currentPage, highlightedItem) &&
+      highlightedItem
+    ) {
       handleSelect(highlightedItem);
       return;
     }
 
     // Handle space selection for menu items as before
-    if (input === " " && canDrillIn(currentPage, highlightedItem) && highlightedItem) {
+    if (
+      input === " " &&
+      canDrillIn(currentPage, highlightedItem) &&
+      highlightedItem
+    ) {
       handleSelect(highlightedItem);
     }
   });

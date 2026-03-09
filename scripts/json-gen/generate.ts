@@ -3,9 +3,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
 import meow from "meow";
-
-import { getDirectories, resolveSections, type SectionInfo } from "./utils";
 import type { JSONOutput } from "../../src/types";
+import { getDirectories, resolveSections, type SectionInfo } from "./utils";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HUMANS_DIR = path.resolve(__dirname, "../../src/humans");
@@ -72,7 +71,10 @@ export async function generateJSON(name: string) {
   }
 
   const { data: config } = matter(fs.readFileSync(configPath, "utf8"));
-  const sections: SectionInfo[] = resolveSections(userPath, config.sections as string[]);
+  const sections: SectionInfo[] = resolveSections(
+    userPath,
+    config.sections as string[],
+  );
 
   // Build a flatter, CV‑centric structure.
   // We no longer care about the terminal UI menu or file names – the

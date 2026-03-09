@@ -151,7 +151,9 @@ async function generatePDF(
         sectionTitle = (indexData.title as string) || section;
 
         if (indexData.menu && Array.isArray(indexData.menu)) {
-          filesToProcess = indexData.menu.map((item: { file: string }) => item.file);
+          filesToProcess = indexData.menu.map(
+            (item: { file: string }) => item.file,
+          );
         } else {
           filesToProcess = indexFile.split("\n").filter(Boolean);
         }

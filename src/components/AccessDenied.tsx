@@ -1,6 +1,6 @@
 import { Box, Text } from "ink";
-import Gradient from "ink-gradient";
 import BigText from "ink-big-text";
+import Gradient from "ink-gradient";
 
 export function AccessDenied() {
   return (

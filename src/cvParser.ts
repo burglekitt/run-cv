@@ -43,7 +43,7 @@ export const getHuman = async (id: string): Promise<HumanManifest> => {
       name: data.name as string,
       role: data.role as string,
       skills,
-      menu: (data.menu as MenuItem[] || []),
+      menu: (data.menu as MenuItem[]) || [],
       content: content,
       dir: humanDir,
       file: path.basename(introFile),

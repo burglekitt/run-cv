@@ -1,8 +1,8 @@
+import { Box, Text } from "ink";
+import { marked, type Token, type Tokens } from "marked";
 import { Fragment, type ReactNode, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Box, Text } from "ink";
-import { marked, type Token } from "marked";
-import type { TokenWithId, ListItemWithId } from "../types";
+import type { ListItemWithId, TokenWithId } from "../types";
 
 function unescapeText(text: string): string {
   return text
@@ -19,26 +19,28 @@ function renderTokens(tokens: TokenWithId[] | undefined): ReactNode {
     return null;
   }
 
-  return tokens.map((token) => {
+  return tokens.map((token: TokenWithId) => {
     switch (token.type) {
       case "heading":
         return (
           <Box key={token.id} marginBottom={1}>
             <Text bold color="green">
-              {renderTokens(token.tokens)}
+              {renderTokens(token.tokens as TokenWithId[] | undefined)}
             </Text>
           </Box>
         );
       case "paragraph":
         return (
           <Box key={token.id} marginBottom={1}>
-            <Text color="green">{renderTokens(token.tokens)}</Text>
+            <Text color="green">
+              {renderTokens(token.tokens as TokenWithId[] | undefined)}
+            </Text>
           </Box>
         );
       case "list":
         return (
           <Box key={token.id} flexDirection="column" marginBottom={1}>
-            {token.items?.map((item: ListItemWithId) => {
+            {(token.items as ListItemWithId[] | undefined)?.map((item) => {
               const elements: ReactNode[] = [];
               let inlineTokens: TokenWithId[] = [];
 
@@ -54,7 +56,7 @@ function renderTokens(tokens: TokenWithId[] | undefined): ReactNode {
                 }
               };
 
-              item.tokens.forEach((t) => {
+              (item.tokens as TokenWithId[]).forEach((t) => {
                 if (
                   t.type === "heading" ||
                   t.type === "paragraph" ||
@@ -86,18 +88,18 @@ function renderTokens(tokens: TokenWithId[] | undefined): ReactNode {
       case "strong":
         return (
           <Text key={token.id} bold>
-            {renderTokens(token.tokens)}
+            {renderTokens(token.tokens as TokenWithId[] | undefined)}
           </Text>
         );
       case "em":
         return (
           <Text key={token.id} italic>
-            {renderTokens(token.tokens)}
+            {renderTokens(token.tokens as TokenWithId[] | undefined)}
           </Text>
         );
       case "text":
         // marked.js can escape html entities, so we unescape them
-        return <Text key={token.id}>{unescapeText(token.id)}</Text>;
+        return <Text key={token.id}>{unescapeText(token.text)}</Text>;
       case "space":
         return <Box key={token.id} marginTop={1} />;
       default:
@@ -115,29 +117,27 @@ export function MarkdownRenderer({ content }: Props) {
     const tokens = marked.lexer(content);
 
     const addId = (token: Token): TokenWithId => {
-      const partialToken = { ...token };
+      const baseToken = { ...token, id: uuidv4() } as TokenWithId;
 
-      if ("tokens" in partialToken && partialToken.tokens) {
-        const tokens = partialToken.tokens.map(addId);
-        return { ...partialToken, id: uuidv4(), tokens } as TokenWithId;
+      if ("tokens" in baseToken && baseToken.tokens) {
+        baseToken.tokens = baseToken.tokens.map(addId);
       }
 
       if (
-        partialToken.type === "list" &&
-        "items" in partialToken &&
-        partialToken.items
+        baseToken.type === "list" &&
+        "items" in baseToken &&
+        baseToken.items
       ) {
-        const items = partialToken.items.map(
-          (item: ListItemWithId): ListItemWithId => {
-            const tokens =
-              "tokens" in item && item.tokens ? item.tokens.map(addId) : [];
-            return { ...item, id: uuidv4(), tokens };
-          },
-        );
-        return { ...partialToken, id: uuidv4(), items } as TokenWithId;
+        baseToken.items = baseToken.items.map((item: Tokens.ListItem) => {
+          const itemWithId = { ...item, id: uuidv4() } as ListItemWithId;
+          if (item.tokens) {
+            itemWithId.tokens = item.tokens.map(addId);
+          }
+          return itemWithId;
+        });
       }
 
-      return { ...partialToken, id: uuidv4() } as TokenWithId;
+      return baseToken;
     };
 
     return tokens.map(addId);

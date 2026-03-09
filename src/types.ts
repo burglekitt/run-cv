@@ -1,3 +1,5 @@
+import type { Token as MarkedToken, Tokens } from "marked";
+
 export interface MenuItem {
   label: string;
   file?: string;
@@ -33,32 +35,12 @@ export interface JSONOutput {
   entries: JSONEntry[];
 }
 
-import type { Tokens } from "marked";
-
-export type ListItemWithId = Omit<Tokens.ListItem, "tokens"> & {
-	id: string;
-	tokens: TokenWithId[];
+// Simplified approach - just add an ID to any token
+export type TokenWithId = MarkedToken & {
+  id: string;
 };
 
-import type { Token as MarkedToken } from "marked";
-
-type GenericToken = Exclude<
-	MarkedToken,
-	| Tokens.Heading
-	| Tokens.Paragraph
-	| Tokens.List
-	| Tokens.Strong
-	| Tokens.Em
-	| Tokens.Text
-	| Tokens.Space
->;
-
-export type TokenWithId =
-	| (Omit<Tokens.Heading, "tokens"> & { id: string; tokens: TokenWithId[] })
-	| (Omit<Tokens.Paragraph, "tokens"> & { id: string; tokens: TokenWithId[] })
-	| (Omit<Tokens.List, "items"> & { id: string; items: ListItemWithId[] })
-	| (Omit<Tokens.Strong, "tokens"> & { id: string; tokens: TokenWithId[] })
-	| (Omit<Tokens.Em, "tokens"> & { id: string; tokens: TokenWithId[] })
-	| (Tokens.Text & { id: string })
-	| (Tokens.Space & { id: string })
-	| (GenericToken & { id: string });
+export type ListItemWithId = Tokens.ListItem & {
+  id: string;
+  tokens: TokenWithId[];
+};
