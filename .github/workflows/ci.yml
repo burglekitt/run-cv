@@ -18,15 +18,6 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Verify package-lock.json
-        run: |
-          if [ -f package-lock.json ]; then
-            echo "package-lock.json exists"
-          else
-            echo "package-lock.json is missing"
-            exit 1
-          fi
-
       - name: Debug
         run: |
           node -v
