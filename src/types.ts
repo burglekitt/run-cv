@@ -1,3 +1,5 @@
+import type { Token as MarkedToken, Tokens } from "marked";
+
 export interface MenuItem {
   label: string;
   file?: string;
@@ -21,3 +23,24 @@ export interface HumanManifest extends Page {
   role: string;
   skills?: string[]; // parsed from frontmatter comma-separated list
 }
+
+export interface JSONEntry {
+  section: string;
+  frontmatter: Record<string, unknown>;
+  content: string;
+}
+
+export interface JSONOutput {
+  name: string;
+  entries: JSONEntry[];
+}
+
+// Simplified approach - just add an ID to any token
+export type TokenWithId = MarkedToken & {
+  id: string;
+};
+
+export type ListItemWithId = Tokens.ListItem & {
+  id: string;
+  tokens: TokenWithId[];
+};

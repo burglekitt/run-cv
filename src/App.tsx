@@ -1,28 +1,28 @@
 #!/usr/bin/env node
 import fs from "node:fs";
-import path from "node:path";
 import os from "node:os";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { Fragment, useState, useEffect } from "react";
-import { Text, Box, useInput } from "ink";
-import SelectInput from "ink-select-input";
-import Gradient from "ink-gradient";
+import { Box, Text, useInput } from "ink";
 import BigText from "ink-big-text";
+import Gradient from "ink-gradient";
+import SelectInput from "ink-select-input";
 import open from "open";
-import { getHuman, getPage } from "./cvParser";
-import { HumanManifest, Page, HighlightedItem } from "./types";
-// navigation helpers moved out of App
-import {
-  computeNavigationHint,
-  computeHighlightedItem,
-  canDrillIn,
-} from "./utils/navigation-utils";
-import { theme } from "./styles/theme";
-import { SkillBadge } from "./components/SkillBadge";
-import { MarkdownRenderer } from "./components/MarkdownRenderer";
-import { LoadingScreen } from "./components/LoadingScreen";
+import { Fragment, useEffect, useState } from "react";
 import { AccessDenied } from "./components/AccessDenied";
 import { Hints } from "./components/Hints";
+import { LoadingScreen } from "./components/LoadingScreen";
+import { MarkdownRenderer } from "./components/MarkdownRenderer";
+import { SkillBadge } from "./components/SkillBadge";
+import { getHuman, getPage } from "./cvParser";
+import { theme } from "./styles/theme";
+import type { HighlightedItem, HumanManifest, MenuItem, Page } from "./types";
+// navigation helpers moved out of App
+import {
+  canDrillIn,
+  computeHighlightedItem,
+  computeNavigationHint,
+} from "./utils/navigation-utils";
 import { grabEmailPattern, grabLinkedInPattern } from "./utils/regex-utils";
 
 interface AppProps {
@@ -90,7 +90,7 @@ export function App({ name }: AppProps) {
         const data = await getHuman(name);
         setHuman(data);
         setHistory([data]);
-      } catch (err) {
+      } catch {
         setError("ACCESS DENIED");
       }
     };
@@ -165,14 +165,22 @@ export function App({ name }: AppProps) {
     }
 
     // arrow-right should drill in when an item is highlighted and we have a non-empty menu
-    if (key.rightArrow && canDrillIn(currentPage, highlightedItem)) {
-      handleSelect(highlightedItem!);
+    if (
+      key.rightArrow &&
+      canDrillIn(currentPage, highlightedItem) &&
+      highlightedItem
+    ) {
+      handleSelect(highlightedItem);
       return;
     }
 
     // Handle space selection for menu items as before
-    if (input === " " && canDrillIn(currentPage, highlightedItem)) {
-      handleSelect(highlightedItem!);
+    if (
+      input === " " &&
+      canDrillIn(currentPage, highlightedItem) &&
+      highlightedItem
+    ) {
+      handleSelect(highlightedItem);
     }
   });
 
@@ -181,13 +189,13 @@ export function App({ name }: AppProps) {
 
     // 1. Find the specific menu item object to check for extra metadata (like 'theme')
     const selectedMenuItem = currentPage.menu?.find(
-      (m: any) => m.file === item.value || m.theme === item.value,
+      (m: MenuItem) => m.file === item.value || m.theme === item.value,
     );
 
     // 2. SAVE NAVIGATION MEMORY (Existing logic)
     const selectedIndex =
       currentPage.menu?.findIndex(
-        (i: any) => i.file === item.value || i.theme === item.value,
+        (i: MenuItem) => i.file === item.value || i.theme === item.value,
       ) ?? 0;
 
     setNavigationMemory((prev) => ({
@@ -219,7 +227,7 @@ export function App({ name }: AppProps) {
           setError(`ARCHIVE ERROR: Resource ${filename} not found in package.`);
         }
       } catch (err) {
-        setError("SYSTEM FAILURE: " + (err as Error).message);
+        setError(`SYSTEM·FAILURE:·${(err as Error).message}`);
       }
       return;
     }
@@ -267,9 +275,8 @@ export function App({ name }: AppProps) {
         <AccessDenied />
       ) : human && currentPage ? (
         <Fragment>
-          <Box marginBottom={1}>
+          <Box marginBottom={1} flexDirection="column">
             <Text color={theme.terminalGreenBright}>User: {human.name}</Text>
-            <Text color="gray"> | </Text>
             <Text color={theme.terminalGreenMedium}>Role: {human.role}</Text>
           </Box>
 
@@ -296,10 +303,10 @@ export function App({ name }: AppProps) {
                 <Box marginTop={1}>
                   <SelectInput
                     key={currentPage.dir}
-                    items={currentPage.menu.map((item: any) => ({
+                    items={currentPage.menu.map((item: MenuItem) => ({
                       label: item.label,
                       // Use file if it exists, otherwise use the theme name as the value
-                      value: item.file || item.theme,
+                      value: item.file || item.theme || "",
                     }))}
                     onSelect={handleSelect}
                     onHighlight={setHighlightedItem}

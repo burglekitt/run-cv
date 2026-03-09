@@ -1,9 +1,9 @@
+import type { HighlightedItem, Page } from "../types";
 import {
-  computeNavigationHint,
-  computeHighlightedItem,
   canDrillIn,
+  computeHighlightedItem,
+  computeNavigationHint,
 } from "../utils/navigation-utils";
-import { Page, HighlightedItem } from "../types";
 
 describe("navigation hint logic", () => {
   const somePage: Page = { dir: "foo", file: "foo.md", content: "", menu: [] };

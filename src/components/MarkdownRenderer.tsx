@@ -1,49 +1,54 @@
-import { Fragment, ReactNode } from "react";
 import { Box, Text } from "ink";
-import { marked, Token, Tokens } from "marked";
+import { marked, type Token, type Tokens } from "marked";
+import { Fragment, type ReactNode, useMemo } from "react";
+import { v4 as uuidv4 } from "uuid";
+import type { ListItemWithId, TokenWithId } from "../types";
 
-const unescape = (text: string): string => {
+function unescapeText(text: string): string {
   return text
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'");
-};
+}
 
 // This is a simplified recursive renderer for marked tokens.
-const renderTokens = (tokens: Token[] | undefined): ReactNode => {
+function renderTokens(tokens: TokenWithId[] | undefined): ReactNode {
   if (!tokens) {
     return null;
   }
 
-  return tokens.map((token, index) => {
+  return tokens.map((token: TokenWithId) => {
     switch (token.type) {
       case "heading":
         return (
-          <Box key={index} marginBottom={1}>
+          <Box key={token.id} marginBottom={1}>
             <Text bold color="green">
-              {renderTokens(token.tokens)}
+              {renderTokens(token.tokens as TokenWithId[] | undefined)}
             </Text>
           </Box>
         );
       case "paragraph":
         return (
-          <Box key={index} marginBottom={1}>
-            <Text color="green">{renderTokens(token.tokens)}</Text>
+          <Box key={token.id} marginBottom={1}>
+            <Text color="green">
+              {renderTokens(token.tokens as TokenWithId[] | undefined)}
+            </Text>
           </Box>
         );
       case "list":
         return (
-          <Box key={index} flexDirection="column" marginBottom={1}>
-            {(token as Tokens.List).items.map((item, i) => {
+          <Box key={token.id} flexDirection="column" marginBottom={1}>
+            {(token.items as ListItemWithId[] | undefined)?.map((item) => {
               const elements: ReactNode[] = [];
-              let inlineTokens: Token[] = [];
+              let inlineTokens: TokenWithId[] = [];
 
               const flushInline = () => {
                 if (inlineTokens.length > 0) {
+                  const inlineKey = `inline-${elements.length}`;
                   elements.push(
-                    <Text key={`inline-${elements.length}`} color="green">
+                    <Text key={inlineKey} color="green">
                       {renderTokens(inlineTokens)}
                     </Text>,
                   );
@@ -51,7 +56,7 @@ const renderTokens = (tokens: Token[] | undefined): ReactNode => {
                 }
               };
 
-              item.tokens.forEach((t) => {
+              (item.tokens as TokenWithId[]).forEach((t) => {
                 if (
                   t.type === "heading" ||
                   t.type === "paragraph" ||
@@ -59,10 +64,9 @@ const renderTokens = (tokens: Token[] | undefined): ReactNode => {
                   t.type === "space"
                 ) {
                   flushInline();
+                  const blockKey = `block-${elements.length}`;
                   elements.push(
-                    <Fragment key={`block-${elements.length}`}>
-                      {renderTokens([t])}
-                    </Fragment>,
+                    <Fragment key={blockKey}>{renderTokens([t])}</Fragment>,
                   );
                 } else {
                   inlineTokens.push(t);
@@ -71,7 +75,7 @@ const renderTokens = (tokens: Token[] | undefined): ReactNode => {
               flushInline();
 
               return (
-                <Box key={i} flexDirection="row" paddingLeft={2}>
+                <Box key={item.id} flexDirection="row" paddingLeft={2}>
                   <Box marginRight={1}>
                     <Text color="green">-</Text>
                   </Box>
@@ -83,32 +87,61 @@ const renderTokens = (tokens: Token[] | undefined): ReactNode => {
         );
       case "strong":
         return (
-          <Text key={index} bold>
-            {renderTokens(token.tokens)}
+          <Text key={token.id} bold>
+            {renderTokens(token.tokens as TokenWithId[] | undefined)}
           </Text>
         );
       case "em":
         return (
-          <Text key={index} italic>
-            {renderTokens(token.tokens)}
+          <Text key={token.id} italic>
+            {renderTokens(token.tokens as TokenWithId[] | undefined)}
           </Text>
         );
       case "text":
         // marked.js can escape html entities, so we unescape them
-        return <Text key={index}>{unescape(token.text)}</Text>;
+        return <Text key={token.id}>{unescapeText(token.text)}</Text>;
       case "space":
-        return <Box key={index} marginTop={1} />;
+        return <Box key={token.id} marginTop={1} />;
       default:
         return null;
     }
   });
-};
+}
 
 interface Props {
   content: string;
 }
 
 export function MarkdownRenderer({ content }: Props) {
-  const tokens = marked.lexer(content);
-  return <>{renderTokens(tokens)}</>;
+  const tokensWithIds = useMemo((): TokenWithId[] => {
+    const tokens = marked.lexer(content);
+
+    const addId = (token: Token): TokenWithId => {
+      const baseToken = { ...token, id: uuidv4() } as TokenWithId;
+
+      if ("tokens" in baseToken && baseToken.tokens) {
+        baseToken.tokens = baseToken.tokens.map(addId);
+      }
+
+      if (
+        baseToken.type === "list" &&
+        "items" in baseToken &&
+        baseToken.items
+      ) {
+        baseToken.items = baseToken.items.map((item: Tokens.ListItem) => {
+          const itemWithId = { ...item, id: uuidv4() } as ListItemWithId;
+          if (item.tokens) {
+            itemWithId.tokens = item.tokens.map(addId);
+          }
+          return itemWithId;
+        });
+      }
+
+      return baseToken;
+    };
+
+    return tokens.map(addId);
+  }, [content]);
+
+  return <>{renderTokens(tokensWithIds)}</>;
 }

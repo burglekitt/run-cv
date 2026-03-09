@@ -15,19 +15,18 @@ beforeEach(() => {
 // helper to intercept written JSON without touching disk
 function captureWrite() {
   const calls: Array<{ path: string; data: string }> = [];
-  const original = fs.writeFileSync;
   const spy = vi
     .spyOn(fs, "writeFileSync")
-    .mockImplementation((p: any, data: any) => {
+    .mockImplementation((p: unknown, data: unknown) => {
       // ignore descriptor paths; convert to string when possible
       calls.push({ path: String(p), data: String(data) });
     });
-  return { spy, calls, restore: () => spy.mockRestore() };
+  return { calls, restore: () => spy.mockRestore() };
 }
 
 describe("json generator", () => {
   it("produces valid JSON for a single human", async () => {
-    const { spy, calls, restore } = captureWrite();
+    const { calls, restore } = captureWrite();
     await generateJSON("craig");
     restore();
 
@@ -36,7 +35,9 @@ describe("json generator", () => {
     expect(written.name).toBe("craig");
     expect(Array.isArray(written.entries)).toBe(true);
     expect(written.entries.length).toBeGreaterThan(0);
-    expect(written.entries.some((e: any) => e.section === "career")).toBe(true);
+    expect(
+      written.entries.some((e: { section: string }) => e.section === "career"),
+    ).toBe(true);
   });
 
   it("throws when asked to generate a nonexistent human", async () => {
@@ -48,7 +49,7 @@ describe("json generator", () => {
     const humans = getDirectories(humansDir);
     expect(humans.length).toBeGreaterThan(0);
 
-    const { spy, calls, restore } = captureWrite();
+    const { calls, restore } = captureWrite();
     for (const h of humans) {
       await generateJSON(h);
     }
