@@ -90,7 +90,7 @@ export function App({ name }: AppProps) {
         const data = await getHuman(name);
         setHuman(data);
         setHistory([data]);
-      } catch (_err) {
+      } catch {
         setError("ACCESS DENIED");
       }
     };
