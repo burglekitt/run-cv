@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, feat/**]
+    branches: [main, feat/**, fix/**]
   pull_request:
-    branches: [main, feat/**]
+    branches: [main, feat/**, fix/**]
 
 jobs:
   test:
@@ -17,7 +17,13 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-      
+
+      - name: Debug
+        run: |
+          node -v
+          npm -v
+          npm list --depth=0
+          
       - name: Install dependencies
         run: npm install
       
