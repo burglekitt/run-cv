@@ -15,6 +15,6 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
       - run: npm install
-      - run: biome check
+      - run: npm run lint
       - run: npm run test
       - run: npm run build
