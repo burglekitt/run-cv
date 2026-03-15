@@ -1,0 +1,33 @@
+:root {
+  /* Theme variables */
+  --background: #f5f5dc;
+  --heading-text: #5a3a2a;
+  --heading-border: #c8b5a6;
+  --h1-font-size: 1em;
+  --h2-3-font-size: 0.9em;
+  --body-text: #3d2b1f;
+  --body-font-size: 0.8em;
+  --body-line-height: 1.5;
+  --sub-text: #8b4513;
+  --link-text: #8b4513;
+  --section-title-text: var(--sub-text);
+  --section-title-bg: #e8dfc5;
+  --section-title-font-size: 1em;
+  --section-bg: #f5f5dc;
+  --list-item-marker: #8b4513;
+  --list-item-spacing: 0.5em;
+  --list-style-type: disc;
+  /* corrected line height for lists; was accidentally set to 0.1mm which squashes items */
+  --list-line-height: 1.2;
+
+  /* Header Footer Variables */
+  --header-bg: #e8dfc5;
+  --header-text: #5b4636;
+  --header-font-size: 8pt;
+  --header-border-bottom: #c8b5a6;
+  --footer-bg: #e8dfc5;
+  --footer-text: #5b4636;
+  --footer-font-size: 6pt;
+  --footer-border-top: transparent;
+  --footer-page-text: #5b4636;
+}

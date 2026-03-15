@@ -1,0 +1,88 @@
+/* terminal theme (PDF) - stripped of window-style border to prevent double-border/cutoff issues */
+/* historically we mimicked a terminal window with a 2mm border; that caused
+   overlapping borders when combined with page margins, so it's been removed. */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap");
+
+:root {
+  --font-main: "IBM Plex Mono", monospace;
+}
+
+/* terminal.css */
+body {
+  font-family: "IBM Plex Mono", monospace;
+  background-color: var(--background);
+  color: var(--body-text);
+  font-size: var(--body-font-size);
+  line-height: var(--body-line-height, 1.5);
+}
+
+h1,
+h2,
+h3 {
+  font-family: "IBM Plex Mono", monospace;
+  color: var(--heading-text);
+  border-bottom: 1px solid var(--heading-border);
+}
+h1:first-of-type {
+  font-size: var(--h1-font-size);
+}
+h1:not(:first-of-type) {
+  font-size: var(--h2-3-font-size);
+  margin-top: 5mm;
+}
+a {
+  color: var(--link-text);
+}
+
+.section-title {
+  font-family: var(--font-main);
+  background-color: var(--section-title-bg); /* High contrast green bar */
+  color: var(--section-title-text); /* Black text on green */
+  padding: 2mm 4mm;
+  text-transform: uppercase;
+  font-size: var(--section-title-font-size);
+  margin-top: 8mm;
+  margin-bottom: 4mm;
+  display: inline-block; /* Keeps the background tight to the text */
+  width: 100%; /* Or set to auto if you want short bars */
+
+  /* Critical for PDF: Prevents the title from appearing at the bottom of a page alone */
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+/* Optional: Add a subtle prefix or scan-line effect to the titles */
+.section-title::before {
+  content: "> ";
+}
+
+.cv-section {
+  background: var(--section-bg);
+}
+
+::marker {
+  color: var(--list-item-marker);
+}
+
+ul {
+  line-height: var(--list-line-height, 1.2);
+}
+li {
+  margin-bottom: var(--list-item-spacing);
+}
+
+/* skill badges style */
+.skills-container {
+  margin-bottom: 4mm;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1mm 2mm;
+}
+.skill {
+  display: inline-block;
+  background-color: var(--skill-bg, #444);
+  color: var(--skill-text, #fff);
+  padding: 1mm 2mm;
+  border-radius: 1mm;
+  font-size: var(--skill-font-size, 8pt);
+}

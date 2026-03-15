@@ -1,0 +1,27 @@
+/* terminal-pdf.css */
+.header-area {
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  font-size: var(--header-font-size);
+  border-bottom: 2px solid var(--header-border-bottom);
+  justify-content: center;
+}
+
+.footer-area {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  font-size: var(--footer-font-size);
+  border-top: 2px solid var(--footer-border-top);
+  justify-content: space-between;
+}
+
+.header-text,
+.footer-text {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.page-info {
+  color: var(--footer-page-text);
+}

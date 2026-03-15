@@ -1,0 +1,93 @@
+@import url("https://fonts.googleapis.com/css2?family=Special+Elite&display=swap");
+
+:root {
+  --font-main: "Special Elite", system-ui;
+}
+
+/* vintage.css */
+body {
+  font-family: "Special Elite", serif;
+  background-color: var(--background);
+  color: var(--body-text);
+  font-size: var(--body-font-size);
+  line-height: var(--body-line-height, 1.5);
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Special Elite", serif;
+  color: #5a3a2a;
+  border-bottom: 2px solid #c8b5a6;
+}
+
+/* all subsequent h1's need to be smaller */
+h1:first-of-type {
+  font-size: var(--h1-font-size);
+}
+h1:not(:first-of-type) {
+  font-size: var(--h2-3-font-size);
+  margin-top: 5mm;
+}
+a {
+  color: var(--link-text);
+}
+
+.section-title {
+  font-family: "Courier New", Courier, serif;
+  background-color: var(--section-title-bg);
+  color: var(--section-title-text);
+  font-size: var(--section-title-font-size);
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 2px;
+
+  /* The "Old Document" look: Double border bottom */
+  border-bottom: 3px double var(--vintage-ink);
+  padding-top: 2mm;
+  padding-bottom: 2mm;
+  margin-top: 12mm;
+  margin-bottom: 6mm;
+  display: block;
+  width: 100%;
+
+  /* Ensure the title stays with its following content */
+  break-after: avoid;
+  page-break-after: avoid;
+}
+.section-title::before {
+  content: "> ";
+}
+
+.cv-section {
+  background: var(--section-bg);
+}
+
+::marker {
+  color: var(--list-item-marker);
+}
+
+ul {
+  /* use variable with sensible fallback matching terminal theme */
+  line-height: var(--list-line-height, 1.2);
+}
+li {
+  /* provide fallback to prevent collapsing if variable undefined */
+  margin-bottom: var(--list-item-spacing, 0mm);
+}
+
+/* skill badges style */
+.skills-container {
+  margin-bottom: 4mm;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1mm 2mm;
+}
+.skill {
+  display: inline-block;
+  background-color: var(--skill-bg, #c8b5a6);
+  color: var(--skill-text, #5a3a2a);
+  padding: 1mm 2mm;
+  border-radius: 1mm;
+  font-size: var(--skill-font-size, 8pt);
+}

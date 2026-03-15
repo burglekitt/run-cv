@@ -1,0 +1,33 @@
+/* root.css */
+@page {
+  size: A4;
+  margin: 0;
+  padding: 4mm;
+  width: 100%;
+  margin: 5mm 0mm 5mm 0mm;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/* Ensure the main content doesn't try to overlap if margins fail */
+main {
+  display: block;
+  /* position: relative; */
+  width: 100%;
+  /* we don't want any borders here; keep content flush with the page margins */
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Avoid breaking a section or a heading across two pages */
+section,
+h1,
+h2 {
+  page-break-inside: avoid;
+}
