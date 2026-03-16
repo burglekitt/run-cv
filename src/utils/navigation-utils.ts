@@ -1,4 +1,5 @@
 import type { HighlightedItem, Page } from "../types";
+import { getMenuItemValue } from "./menu-actions";
 
 export function computeNavigationHint(history: Page[]): string {
   // only show instructions on the very first, root page
@@ -17,8 +18,7 @@ export function computeHighlightedItem(
   const menuItem = currentPage.menu[idx];
   if (!menuItem) return null;
 
-  // menuItem.file and menuItem.theme are both optional; pick one that exists.
-  const val = menuItem.file ?? menuItem.theme;
+  const val = getMenuItemValue(menuItem);
   if (!val) {
     // there is nothing to drill into
     return null;

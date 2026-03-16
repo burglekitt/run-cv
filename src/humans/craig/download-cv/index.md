@@ -5,7 +5,7 @@ menu:
     theme: "terminal"
   - label: "Download: Vintage Archive (Sepia)"
     theme: "vintage"
-  - label: "Download: ATS-friendly CV"
+  - label: "Download: HR/ATS-friendly CV"
     file: "craig-cv.pdf"
 ---
 
