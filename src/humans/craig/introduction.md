@@ -9,6 +9,8 @@ menu:
     file: education/index.md
   - label: Organizations
     file: organizations/index.md
+  - label: Projects
+    file: projects/index.md
   - label: Contact
     file: contact.md
   - label: Download CV

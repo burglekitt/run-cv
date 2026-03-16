@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { Box, Text, useInput } from "ink";
+import { Box, Text, useApp, useInput } from "ink";
 import BigText from "ink-big-text";
 import Gradient from "ink-gradient";
 import SelectInput from "ink-select-input";
@@ -57,6 +57,7 @@ function getPdfRoot() {
 const PDF_ROOT = getPdfRoot();
 
 export function App({ name }: AppProps) {
+  const { exit } = useApp();
   const [human, setHuman] = useState<HumanManifest | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -141,10 +142,8 @@ export function App({ name }: AppProps) {
     }
 
     if (input === "q" && (history.length <= 1 || error)) {
-      // clear terminal first
-      process.stdout.write("\x1Bc");
-      // then exit
-      process.exit(0);
+      exit();
+      return;
     }
 
     // If on a contact page, handle command input (left/right should not interfere)
@@ -204,9 +203,16 @@ export function App({ name }: AppProps) {
     }));
 
     // 3. CHECK FOR DOWNLOAD ACTION
-    // If the menu item has a 'theme' property, it's a PDF download request
+    // Support both generated theme PDFs and static file PDFs.
+    let filename: string | undefined;
+
     if (selectedMenuItem?.theme) {
-      const filename = `${human.name.toLowerCase()}-${selectedMenuItem.theme}-cv.pdf`;
+      filename = `${human.name.toLowerCase()}-${selectedMenuItem.theme}-cv.pdf`;
+    } else if (selectedMenuItem?.file?.toLowerCase().endsWith(".pdf")) {
+      filename = selectedMenuItem.file;
+    }
+
+    if (filename) {
       const internalPdfPath = path.join(PDF_ROOT, filename);
 
       // Cross-platform way to target the Downloads folder
@@ -220,9 +226,6 @@ export function App({ name }: AppProps) {
 
           // 2. Open the file from the Downloads folder
           await open(userDownloadPath);
-
-          // Optionally: Update UI to show it was saved to Downloads
-          // (You'd need a state variable for a "Success" message)
         } else {
           setError(`ARCHIVE ERROR: Resource ${filename} not found in package.`);
         }
