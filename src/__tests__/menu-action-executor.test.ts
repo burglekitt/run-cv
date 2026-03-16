@@ -84,7 +84,7 @@ describe("menu action executor", () => {
     fs.mkdirSync(pdfRoot, { recursive: true });
     fs.writeFileSync(path.join(pdfRoot, "craig-cv.pdf"), "PDF");
 
-    const copySpy = vi.spyOn(fs, "copyFileSync");
+    const copySpy = vi.spyOn(fs, "copyFileSync").mockImplementation(() => {});
 
     const { errors } = await runExecutor(
       {
