@@ -3,8 +3,6 @@ layout: "terminal"
 sections:
   - introduction
   - career
-  - education
-  - hobbies
   - volunteer
 header: "Baldur Páll Hólmgeirsson  - Senior Frontend Engineer"
 footer: "We built this PDF! burglekitt/run-cv"
