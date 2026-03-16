@@ -5,6 +5,8 @@ menu:
     theme: "terminal"
   - label: "Download: Vintage Archive (Sepia)"
     theme: "vintage"
+  - label: "Download: HR/ATS-friendly CV"
+    file: "baldur-cv.pdf"
 ---
 
 # DOWNLOAD MISSION LOGS

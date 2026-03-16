@@ -8,4 +8,5 @@ title: "COMMS"
 ## Secure Channel
 
 - Email: baldurpan@gmail.com
-- LinkedIn: https://www.linkedin.com/in/baldur-p%C3%A1ll-h%C3%B3lmgeirsson-2a084b225/
+- LinkedIn: https://www.linkedin.com/in/baldur-pall/
+- Phone: +354 6995456

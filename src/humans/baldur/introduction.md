@@ -5,10 +5,6 @@ skills: TypeScript, React, Node.js, Next.js, TanStack, Playwright, WCAG, RAG/AI
 menu:
   - label: Career
     file: career/index.md
-  - label: Education
-    file: education/index.md
-  - label: Hobbies
-    file: hobbies/index.md
   - label: Volunteer
     file: volunteer/index.md
   - label: Projects
