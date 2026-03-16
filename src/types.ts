@@ -4,6 +4,8 @@ export interface MenuItem {
   label: string;
   file?: string;
   theme?: string;
+  url?: string;
+  link?: string;
 }
 
 export interface Page {

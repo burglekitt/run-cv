@@ -11,6 +11,8 @@ menu:
     file: hobbies/index.md
   - label: Volunteer
     file: volunteer/index.md
+  - label: Projects
+    file: projects/index.md
   - label: Contact
     file: contact.md
   - label: Download CV

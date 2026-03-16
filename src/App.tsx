@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { Box, Text, useInput } from "ink";
+import { Box, Text, useApp } from "ink";
 import BigText from "ink-big-text";
 import Gradient from "ink-gradient";
 import SelectInput from "ink-select-input";
@@ -15,8 +14,16 @@ import { LoadingScreen } from "./components/LoadingScreen";
 import { MarkdownRenderer } from "./components/MarkdownRenderer";
 import { SkillBadge } from "./components/SkillBadge";
 import { getHuman, getPage } from "./cvParser";
+import { useAppKeyboard } from "./hooks/use-app-keyboard";
 import { theme } from "./styles/theme";
-import type { HighlightedItem, HumanManifest, MenuItem, Page } from "./types";
+import type { HighlightedItem, HumanManifest, Page } from "./types";
+import { executeMenuAction } from "./utils/menu-action-executor";
+import {
+  findMenuItemByValue,
+  findMenuItemIndexByValue,
+  getMenuSelectItems,
+  resolveMenuAction,
+} from "./utils/menu-actions";
 // navigation helpers moved out of App
 import {
   canDrillIn,
@@ -57,6 +64,7 @@ function getPdfRoot() {
 const PDF_ROOT = getPdfRoot();
 
 export function App({ name }: AppProps) {
+  const { exit } = useApp();
   const [human, setHuman] = useState<HumanManifest | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -131,114 +139,69 @@ export function App({ name }: AppProps) {
     return () => clearInterval(interval);
   }, []);
 
-  useInput((input, key) => {
-    // Global navigation should always work: back and quit
-    if (key.escape || key.leftArrow || (input === "b" && history.length > 1)) {
-      if (history.length > 1) {
-        setHistory((prev) => prev.slice(0, -1));
-      }
-      return;
-    }
-
-    if (input === "q" && (history.length <= 1 || error)) {
-      // clear terminal first
-      process.stdout.write("\x1Bc");
-      // then exit
-      process.exit(0);
-    }
-
-    // If on a contact page, handle command input (left/right should not interfere)
-    if (isContactPage) {
-      if (input === "m" && contactInfo.email) {
-        const subject = encodeURIComponent("Accessed run-cv, initiating comms");
-        const body = encodeURIComponent(
-          "Having navigated the digital tapestry of your run-cv, I'm reaching out to establish a more direct line of communication. I'm impressed with what I've seen and would like to discuss potential opportunities.",
-        );
-        open(`mailto:${contactInfo.email}?subject=${subject}&body=${body}`, {
-          app: { name: "Mail" },
-        });
-      }
-      if (input === "p" && contactInfo.linkedin) {
-        open(contactInfo.linkedin);
-      }
-      return;
-    }
-
-    // arrow-right should drill in when an item is highlighted and we have a non-empty menu
-    if (
-      key.rightArrow &&
-      canDrillIn(currentPage, highlightedItem) &&
-      highlightedItem
-    ) {
-      handleSelect(highlightedItem);
-      return;
-    }
-
-    // Handle space selection for menu items as before
-    if (
-      input === " " &&
-      canDrillIn(currentPage, highlightedItem) &&
-      highlightedItem
-    ) {
-      handleSelect(highlightedItem);
-    }
+  useAppKeyboard({
+    canGoBack: history.length > 1,
+    hasError: !!error,
+    isContactPage,
+    highlightedItem,
+    canUsePrimaryAction: canDrillIn(currentPage, highlightedItem),
+    contactInfo,
+    onBack: () => setHistory((prev) => prev.slice(0, -1)),
+    onQuit: () => exit(),
+    onPrimaryAction: handleSelect,
+    onContactEmail: handleContactEmail,
+    onContactLinkedIn: handleContactLinkedIn,
   });
 
   async function handleSelect(item: { value: string }) {
     if (!currentPage || !human || !item) return;
 
-    // 1. Find the specific menu item object to check for extra metadata (like 'theme')
-    const selectedMenuItem = currentPage.menu?.find(
-      (m: MenuItem) => m.file === item.value || m.theme === item.value,
+    const selectedMenuItem = findMenuItemByValue(currentPage.menu, item.value);
+    const selectedIndex = findMenuItemIndexByValue(
+      currentPage.menu,
+      item.value,
     );
 
-    // 2. SAVE NAVIGATION MEMORY (Existing logic)
-    const selectedIndex =
-      currentPage.menu?.findIndex(
-        (i: MenuItem) => i.file === item.value || i.theme === item.value,
-      ) ?? 0;
+    if (selectedIndex >= 0) {
+      setNavigationMemory((prev) => ({
+        ...prev,
+        [currentPage.dir]: selectedIndex,
+      }));
+    }
 
-    setNavigationMemory((prev) => ({
-      ...prev,
-      [currentPage.dir]: selectedIndex,
-    }));
+    const action = resolveMenuAction(selectedMenuItem, human.name);
 
-    // 3. CHECK FOR DOWNLOAD ACTION
-    // If the menu item has a 'theme' property, it's a PDF download request
-    if (selectedMenuItem?.theme) {
-      const filename = `${human.name.toLowerCase()}-${selectedMenuItem.theme}-cv.pdf`;
-      const internalPdfPath = path.join(PDF_ROOT, filename);
+    await executeMenuAction({
+      action,
+      currentDir: currentPage.dir,
+      pdfRoot: PDF_ROOT,
+      loadPage: getPage,
+      onNavigate: (nextPage) => setHistory((prev) => [...prev, nextPage]),
+      onError: (message) => setError(message),
+    });
+  }
 
-      // Cross-platform way to target the Downloads folder
-      const downloadsFolder = path.join(os.homedir(), "Downloads");
-      const userDownloadPath = path.join(downloadsFolder, filename);
-
-      try {
-        if (fs.existsSync(internalPdfPath)) {
-          // 1. Copy to the actual Downloads folder
-          fs.copyFileSync(internalPdfPath, userDownloadPath);
-
-          // 2. Open the file from the Downloads folder
-          await open(userDownloadPath);
-
-          // Optionally: Update UI to show it was saved to Downloads
-          // (You'd need a state variable for a "Success" message)
-        } else {
-          setError(`ARCHIVE ERROR: Resource ${filename} not found in package.`);
-        }
-      } catch (err) {
-        setError(`SYSTEM·FAILURE:·${(err as Error).message}`);
-      }
+  function handleContactEmail() {
+    if (!contactInfo.email) {
       return;
     }
 
-    // 4. STANDARD NAVIGATION (Existing logic)
-    try {
-      const nextPage = await getPage(currentPage.dir, item.value);
-      setHistory((prev) => [...prev, nextPage]);
-    } catch (err) {
-      setError((err as Error).message);
+    const subject = encodeURIComponent("Accessed run-cv, initiating comms");
+    const body = encodeURIComponent(
+      "Having navigated the digital tapestry of your run-cv, I'm reaching out to establish a more direct line of communication. I'm impressed with what I've seen and would like to discuss potential opportunities.",
+    );
+
+    open(`mailto:${contactInfo.email}?subject=${subject}&body=${body}`, {
+      app: { name: "Mail" },
+    });
+  }
+
+  function handleContactLinkedIn() {
+    if (!contactInfo.linkedin) {
+      return;
     }
+
+    open(contactInfo.linkedin);
   }
 
   const navigationHint = computeNavigationHint(history);
@@ -303,11 +266,7 @@ export function App({ name }: AppProps) {
                 <Box marginTop={1}>
                   <SelectInput
                     key={currentPage.dir}
-                    items={currentPage.menu.map((item: MenuItem) => ({
-                      label: item.label,
-                      // Use file if it exists, otherwise use the theme name as the value
-                      value: item.file || item.theme || "",
-                    }))}
+                    items={getMenuSelectItems(currentPage.menu)}
                     onSelect={handleSelect}
                     onHighlight={setHighlightedItem}
                     initialIndex={navigationMemory[currentPage.dir] || 0}

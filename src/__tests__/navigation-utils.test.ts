@@ -109,4 +109,24 @@ describe("drill-in guard", () => {
     expect(highlighted).toEqual({ label: "Vintage", value: "vintage" });
     expect(canDrillIn(downloadPage, highlighted)).toBe(true);
   });
+
+  it("handles URL menu items correctly", () => {
+    const projectsPage: Page = {
+      dir: "projects",
+      file: "index.md",
+      content: "",
+      menu: [
+        { label: "Worktree", url: "https://github.com/burglekitt/worktree" },
+      ],
+    };
+    const highlighted = computeHighlightedItem(projectsPage, {
+      projects: 0,
+    }) as HighlightedItem;
+
+    expect(highlighted).toEqual({
+      label: "Worktree",
+      value: "https://github.com/burglekitt/worktree",
+    });
+    expect(canDrillIn(projectsPage, highlighted)).toBe(true);
+  });
 });
