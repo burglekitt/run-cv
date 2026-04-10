@@ -15,11 +15,12 @@
     "dist",
     "README.md"
   ],
+  "packageManager": "pnpm@10.0.0",
   "scripts": {
-    "build": "biome check && tsup src/cli.tsx --format esm --clean && npm run copy:humans && npm run copy:pdfs && npm run build:pdfs",
-    "build:ci": "biome check && tsup src/cli.tsx --format esm --clean && npm run copy:humans",
+    "build": "biome check && tsup src/cli.tsx --format esm --clean && pnpm run copy:humans && pnpm run copy:pdfs && pnpm run build:pdfs",
+    "build:ci": "biome check && tsup src/cli.tsx --format esm --clean && pnpm run copy:humans",
     "build:pdfs": "tsx scripts/pdf-gen/generate.ts --all",
-    "predev": "npm run build:pdfs && npm run copy:pdfs",
+    "predev": "pnpm run build:pdfs && pnpm run copy:pdfs",
     "dev": "tsx src/cli.tsx",
     "test": "vitest run",
     "format": "biome format --write",
@@ -30,7 +31,7 @@
     "copy:pdfs": "tsx scripts/copy-pdfs/copy-pdfs.ts",
     "copy:humans": "cp -r src/humans dist/",
     "gen:json": "tsx scripts/json-gen/generate.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm run build"
   },
   "keywords": [],
   "author": "Craig O. Curtis & Baldur Páll Hólmgeirsson",

@@ -1,12 +1,12 @@
 ---
 type: "career"
 title: "Travel Connect / Corivo"
-subtitle: "Software Engineer | 2023.05 - 2026.02"
+subtitle: "Senior Software Engineer | 2023.05 - 2026.02"
 ---
 
 # Travel Connect / Corivo
 
-_Software Engineer | 2023.05 - 2026.02_
+_Senior Software Engineer | 2023.05 - 2026.02_
 
 - Orchestrated architectural integration of global travel engines following acquisition.
 - Engineered a multi-tenant localization framework (EN/CN) for North Atlantic and Asian scaling.

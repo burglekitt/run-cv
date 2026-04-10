@@ -26,10 +26,10 @@ npx run-cv <name>
 To run the project locally:
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 # or for a specific profile
-npm run dev <name>
+pnpm run dev <name>
 ```
 
 ### Usage
@@ -37,7 +37,7 @@ npm run dev <name>
 To run the CV for a specific human:
 
 ```bash
-npm run dev <name>
+pnpm run dev <name>
 ```
 
 ## Adding a New Human
@@ -72,7 +72,7 @@ Welcome to the terminal.
 You can generate a PDF version of a CV using the `gen-pdf` script. It will include the text from `introduction.md` at the top; separate `pdf-intro.md` files are no longer required.
 
 ```bash
-npm run gen-pdf <name> [-- --theme <theme-name>]
+pnpm run gen-pdf <name> [-- --theme <theme-name>]
 ```
 
 - `<name>`: The name of the human.
@@ -83,7 +83,7 @@ plain JSON file (frontmatter plus markdown body). It ignores any UI/menu
 fields so you can consume it from other tools.
 
 ```bash
-npm run gen-json <name> [-- --all]
+pnpm run gen-json <name> [-- --all]
 ```
 
 Available themes:
@@ -100,7 +100,7 @@ without excessive gaps.
 
 ```bash
 # Generate a PDF for <name> with the 'terminal' theme
-  npm run gen-pdf <name> -- --theme terminal
+  pnpm run gen-pdf <name> -- --theme terminal
 ```
 
 ## NPM Publishing & Versioning Guide
@@ -113,16 +113,16 @@ Decide which part of the version number ($X.Y.Z$) to increment based on your cha
 
 | Command             | Result              | Use Case                                                              |
 | :------------------ | :------------------ | :-------------------------------------------------------------------- |
-| `npm version patch` | `0.0.x` → `0.0.x+1` | Bug fixes, style tweaks, or minor text updates.                       |
-| `npm version minor` | `0.x.0` → `0.x+1.0` | New features (e.g., a new PDF theme) that are backward-compatible.    |
-| `npm version major` | `x.0.0` → `x+1.0.0` | Breaking changes (e.g., changing the data tape structure or CLI API). |
+| `pnpm version patch` | `0.0.x` → `0.0.x+1` | Bug fixes, style tweaks, or minor text updates.                       |
+| `pnpm version minor` | `0.x.0` → `0.x+1.0` | New features (e.g., a new PDF theme) that are backward-compatible.    |
+| `pnpm version major` | `x.0.0` → `x+1.0.0` | Breaking changes (e.g., changing the data tape structure or CLI API). |
 
-> **Note:** These commands automatically update `package.json` and `package-lock.json`, create a git commit, and generate a git tag.
+> **Note:** These commands automatically update `package.json` and `pnpm-lock.yaml`, create a git commit, and generate a git tag.
 
 Example:
 
 ```bash
-npm version patch -m "Release v%s: Fixed header spacing and updated blah theme"
+pnpm version patch -m "Release v%s: Fixed header spacing and updated blah theme"
 ```
 
 ### 2. Sync to GitHub (with tags)
@@ -132,8 +132,8 @@ git push origin main --follow-tags
 ### 3. Publish to npm
 
 ```bash
-npm login
-npm publish
+pnpm login
+pnpm publish
 ```
 
 ### 5. Finalize GitHub Release
